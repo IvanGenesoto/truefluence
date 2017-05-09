@@ -9,7 +9,7 @@
     "bundle:watch": "watchify client/ -vd -t babelify -o server/public/main.js",
     "start": "node .",
     "start:watch": "nodemon .",
-    "watch": "npm run start:watch && npm run bundle:watch"
+    "watch": "run-p start:watch bundle:watch"
   },
   "repository": {
     "type": "git",
@@ -23,6 +23,7 @@
   },
   "homepage": "https://github.com/jyaaan/influencer-deluxe#readme",
   "dependencies": {
+    "body-parser": "^1.17.1",
     "express": "^4.15.2",
     "instagram-private-api": "^0.5.16",
     "knex": "^0.13.0",
