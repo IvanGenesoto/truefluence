@@ -1,6 +1,6 @@
 const React = require('react');
 const store = require('./store');
-const IG = require('../server/ig-main');
+
 
 const UsernameInput = props => {
   const { text } = props;
@@ -12,14 +12,19 @@ const UsernameInput = props => {
   };
   const handleSubmit = event => {
     event.preventDefault();
-    let userName = store.getState().usernameInput;
-    store.dispatch({
-      type: 'START_SEARCH',
-      text: userName
-    });
-    const account = IG.getAccount(userName);
-    console.log('now for the account!');
-    console.log(account);
+    const userName = store.getState().usernameInput;
+    fetch('/account', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: { userName: userName }
+    })
+      .then((result) => {
+        console.log(result);
+        store.dispatch({
+          type: 'SEARCH_COMPLETE',
+          text: 'ok'
+        });
+      });
   };
   return (
     <div className='column'>

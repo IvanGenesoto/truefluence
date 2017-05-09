@@ -4,7 +4,7 @@ const usernameInput = (state = '', action) => {
   switch (action.type) {
     case 'INPUT_CHANGED':
       return action.text;
-    case 'START_SEARCH':
+    case 'SEARCH_COMPLETE':
       return action.text;
     default:
       return state;
