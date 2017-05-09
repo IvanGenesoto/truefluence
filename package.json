@@ -8,7 +8,8 @@
     "bundle": "browserify client/ -t babelify -o server/public/main.js",
     "bundle:watch": "watchify client/ -vd -t babelify -o server/public/main.js",
     "start": "node .",
-    "start:watch": "nodemon ."
+    "start:watch": "nodemon .",
+    "watch": "npm run start:watch && npm run bundle:watch"
   },
   "repository": {
     "type": "git",
