@@ -5,7 +5,6 @@ const usernameInput = (state = '', action) => {
     case 'INPUT_CHANGED':
       return action.text;
     case 'START_SEARCH':
-      console.log('now searching: ', action.text);
       return action.text;
     default:
       return state;
