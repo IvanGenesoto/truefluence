@@ -6,7 +6,7 @@ const UsernameInput = require('./input-username');
 const render = () => {
   const state = store.getState();
   ReactDOM.render(
-    <div>
+    <div className='ui middle aligned center aligned grid'>
       <UsernameInput text={ state.usernameInput } />
     </div>,
     document.querySelector('#container')
