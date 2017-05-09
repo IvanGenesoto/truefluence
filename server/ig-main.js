@@ -1,6 +1,8 @@
-var Client = require('instagram-private-api').V1;
-var device = new Client.Device('eatifyjohn');
-var storage = new Client.CookieFileStorage(__dirname + '/cookies/eatifyjohn.json');
+const Client = require('instagram-private-api').V1;
+const device = new Client.Device('eatifyjohn');
+const path = require('path');
+const cookiePath = path.join(__dirname, '/cookies/eatifyjohn.json');
+const storage = new Client.CookieFileStorage(cookiePath);
 
 function IG() {
 

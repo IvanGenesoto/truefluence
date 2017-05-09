@@ -1,6 +1,6 @@
 const React = require('react');
 const store = require('./store');
-const IG = require('./ig-main');
+const IG = require('../server/ig-main');
 
 const UsernameInput = props => {
   const { text } = props;
