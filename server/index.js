@@ -21,6 +21,8 @@ app.post('/account', (req, res) => {
     })
 })
 
+ig.getAccountById('654773758');
+
 const PORT = 5760;
 
 app.listen(PORT, () => {
