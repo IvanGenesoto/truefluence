@@ -18,13 +18,10 @@ const UsernameInput = props => {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ userName: userName })
     })
-      .then((result) => {
-        console.log(result);
-        // store.dispatch({
-        //   type: 'SEARCH_COMPLETE',
-        //   text: 'ok'
-        // });
-      });
+      .then((result) => result.json())
+      .then(thing => {
+        console.log(thing);
+      })
   };
   return (
     <div className='column'>

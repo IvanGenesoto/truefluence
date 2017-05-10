@@ -17,8 +17,7 @@ app.use(bodyParser.json());
 app.post('/account', (req, res) => {
   ig.getAccountByName(req.body.userName)
     .then((result) => {
-      console.log(result);
-      res.send(result);
+      res.json(result._params);
     })
 })
 
