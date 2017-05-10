@@ -16,7 +16,7 @@ const UsernameInput = props => {
     fetch('/account', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: { userName: userName }
+      body: JSON.stringify({ userName: userName })
     })
       .then((result) => {
         console.log(result);

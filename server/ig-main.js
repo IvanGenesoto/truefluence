@@ -11,13 +11,12 @@ function IG() {
 IG.prototype.getAccount = function(userName) {
   return new Client.Session.create(device, storage, 'eatifyjohn', 'occsbootcamp')
   .then((session) => {
-    new Promise((resolve, reject) => {
-      resolve(Client.Account.searchForUser(session, userName));
+    return new Promise((resolve, reject) => {
+      new Client.Account.searchForUser(session, userName)
+        .then((result) => {
+          resolve(result);
+        })
     })
-    .then((result) => {
-      console.log(result);
-      return result;
-    });
   });
 }
 
