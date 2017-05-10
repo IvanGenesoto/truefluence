@@ -15,9 +15,10 @@ app.use(bodyParser.json());
 // })
 
 app.post('/account', (req, res) => {
-  ig.getAccount(req.body.userName)
+  ig.getAccountByName(req.body.userName)
     .then((result) => {
       console.log(result);
+      res.send(result);
     })
 })
 

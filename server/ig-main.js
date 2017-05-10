@@ -8,7 +8,7 @@ function IG() {
 
 }
 
-IG.prototype.getAccount = function(userName) {
+IG.prototype.getAccountByName = function(userName) {
   return new Client.Session.create(device, storage, 'eatifyjohn', 'occsbootcamp')
   .then((session) => {
     return new Promise((resolve, reject) => {
@@ -18,6 +18,10 @@ IG.prototype.getAccount = function(userName) {
         })
     })
   });
+}
+
+IG.prototype.getPosts = function(userId) {
+  
 }
 
 module.exports = IG;

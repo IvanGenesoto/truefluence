@@ -20,10 +20,10 @@ const UsernameInput = props => {
     })
       .then((result) => {
         console.log(result);
-        store.dispatch({
-          type: 'SEARCH_COMPLETE',
-          text: 'ok'
-        });
+        // store.dispatch({
+        //   type: 'SEARCH_COMPLETE',
+        //   text: 'ok'
+        // });
       });
   };
   return (
