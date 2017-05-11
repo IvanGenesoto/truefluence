@@ -11,7 +11,7 @@ const usernameInput = (state = '', action) => {
   }
 }
 
-const userProfile = (state = '', action) => {
+const userProfile = (state = {}, action) => {
   switch (action.type) {
     case 'SAVE_PROFILE':
       return action.profile;

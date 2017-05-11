@@ -10,9 +10,9 @@ const render = () => {
   ReactDOM.render(
     <div className='ui middle aligned center aligned grid'>
       <UsernameInput text={ state.usernameInput } />
-    </div>
-    <div>
-      <UserProfile { ...state.userProfile }></UserProfile>
+      <div>
+        <UserProfile { ...state.userProfile }></UserProfile>
+      </div>
     </div>,
     document.querySelector('#container')
   )
