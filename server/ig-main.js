@@ -26,14 +26,30 @@ IG.prototype.getAccountById = function (userId, session) {
   });
 }
 
-IG.prototype.getPosts = function(userId, session) {
-  let feed = new Client.Feed.AccountFollowers(session, userId, 2000);
-  return new Promise((resolve, reject) => {
-    resolve(feed.get());
-  })
-    .then((result) => {
-      console.log(result)
-      return result;
+IG.prototype.getPosts = function(userId, sessions) {
+  // return new Promise((resolve, reject) => {
+  //   new Client.Feed.AccountFollowers(session, userId, 2000).get()
+  //     .then((result) => {
+  //       resolve(result);
+  //     })
+  // })
+  new Client.Session.create(device, storage, 'eatifyjohn', 'occsbootcamp')
+    .then((session) => {
+      let feed = new Client.Feed.AccountFollowers(session, '2355406489', 2000);
+      new Promise((resolve, reject) => {
+        resolve(feed.get())
+      })
+        .then((results) => {
+          console.log(results);
+          console.log('number of results here: ' + results.length);
+          return feed.get();
+        })
+        // .then((results) => {
+        //   console.log(results);
+        //   console.log('number of results here: ' + results.length);
+        //   console.log('more available?' + feed.isMoreAvailable());
+        //   return 'hotay';
+        // })
     })
 }
 

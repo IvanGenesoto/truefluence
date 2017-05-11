@@ -26,13 +26,12 @@ app.post('/account', (req, res) => {
 
 app.post('/followers', (req, res) => {
   console.log(req.body.userId);
-  // ig.getPosts(req.body.userId, currentSession.session);
+  ig.getPosts(req.body.userId, currentSession.session)
     // .then((result) => {
     //   console.log('from app');
     //   console.log(result);
     //   res.json(result);
     // })
-  res.json(req.body);
 })
 
 ig.initialize()

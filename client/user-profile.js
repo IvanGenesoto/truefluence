@@ -11,20 +11,17 @@ const UserProfile = props => {
     let mioId = '231191164';
     fetch('/followers', {
       method: 'POST',
-      headers: { 'Content-Type': 'applcation/json' },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ userId: mioId })
     })
-      .then((result) => {
-        console.log(result);
+      .then((result) => result.json())
+      .then((users) => {
+        console.log(users);
+        store.dispatch({
+          type: 'SEARCH_COMPLETE',
+          text: 'oh'
+        })
       })
-      // .then((result) => result.json())
-      // .then((users) => {
-      //   console.log(users);
-      //   store.dispatch({
-      //     type: 'SEARCH_COMPLETE',
-      //     text: 'oh'
-      //   })
-      // })
   }
   return (
     <div>

@@ -20,6 +20,7 @@ const UsernameInput = props => {
     })
       .then((result) => result.json())
       .then(user => {
+        console.log(user);
         store.dispatch({
           type: 'SAVE_PROFILE',
           profile: user
