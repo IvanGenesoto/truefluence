@@ -14,7 +14,8 @@ app.use(staticMiddleware);
 app.use(bodyParser.json());
 
 app.post('/account', (req, res) => {
-  ig.getAccountByName(req.body.userName, currentSession.session)
+  // console.log(req.body.username);
+  ig.getAccountByName(req.body.username, currentSession.session)
     .then((result) => {
       ig.getAccountById(result._params.id, currentSession.session)
         .then((idResult) => {
@@ -23,10 +24,22 @@ app.post('/account', (req, res) => {
     })
 })
 
+app.post('/followers', (req, res) => {
+  console.log(req.body.userId);
+  // ig.getPosts(req.body.userId, currentSession.session);
+    // .then((result) => {
+    //   console.log('from app');
+    //   console.log(result);
+    //   res.json(result);
+    // })
+  res.json(req.body);
+})
+
 ig.initialize()
   .then((session) => {
     currentSession.session = session;
-  })
+    return 'i';
+  });
 
 const PORT = 5760;
 

@@ -12,11 +12,11 @@ const UsernameInput = props => {
   };
   const handleSubmit = event => {
     event.preventDefault();
-    const userName = store.getState().usernameInput;
+    const username = store.getState().usernameInput;
     fetch('/account', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ userName: userName })
+      body: JSON.stringify({ username: username })
     })
       .then((result) => result.json())
       .then(user => {

@@ -6,6 +6,26 @@ const UserProfile = props => {
   console.log(profile.length);
   if (typeof profile.id == 'undefined') return null;
   const profileLink = 'http://www.instagram.com/' + profile.username;
+  const handleGetFollowers = event => {
+    event.preventDefault();
+    let mioId = '231191164';
+    fetch('/followers', {
+      method: 'POST',
+      headers: { 'Content-Type': 'applcation/json' },
+      body: JSON.stringify({ userId: mioId })
+    })
+      .then((result) => {
+        console.log(result);
+      })
+      // .then((result) => result.json())
+      // .then((users) => {
+      //   console.log(users);
+      //   store.dispatch({
+      //     type: 'SEARCH_COMPLETE',
+      //     text: 'oh'
+      //   })
+      // })
+  }
   return (
     <div>
       <div>
@@ -25,24 +45,12 @@ const UserProfile = props => {
       </div>
       <div>
         <p>{ profile.biography }</p>
+        <button
+          className='ui button'
+          onClick={ handleGetFollowers }>Get List of Followers</button>
       </div>
     </div>
   );
 }
 
 module.exports = UserProfile;
-
-// { username: '123chocula',
-//   picture: 'http://scontent.cdninstagram.com/t51.2885-19/12230863_691359027630917_506377473_a.jpg',
-//   fullName: '',
-//   id: 52139312,
-//   isPrivate: false,
-//   hasAnonymousProfilePicture: false,
-//   isBusiness: false,
-//   usertagsCount: 24,
-//   followingCount: 103,
-//   followerCount: 111,
-//   biography: '',
-//   mediaCount: 34,
-//   externalUrl: '' },
-// id: 52139312 }

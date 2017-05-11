@@ -8,9 +8,9 @@ function IG() {
 
 }
 
-IG.prototype.getAccountByName = function(userName, session) {
+IG.prototype.getAccountByName = function(username, session) {
   return new Promise((resolve, reject) => {
-    new Client.Account.searchForUser(session, userName)
+    new Client.Account.searchForUser(session, username)
       .then((result) => {
         resolve(result);
       });
@@ -26,8 +26,15 @@ IG.prototype.getAccountById = function (userId, session) {
   });
 }
 
-IG.prototype.getPosts = function(userId) {
-
+IG.prototype.getPosts = function(userId, session) {
+  let feed = new Client.Feed.AccountFollowers(session, userId, 2000);
+  return new Promise((resolve, reject) => {
+    resolve(feed.get());
+  })
+    .then((result) => {
+      console.log(result)
+      return result;
+    })
 }
 
 IG.prototype.initialize = function () {
