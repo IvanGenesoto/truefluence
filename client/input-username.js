@@ -19,8 +19,8 @@ const UsernameInput = props => {
       body: JSON.stringify({ userName: userName })
     })
       .then((result) => result.json())
-      .then(thing => {
-        console.log(thing);
+      .then(user => {
+        console.log(user);
       })
   };
   return (

@@ -14,7 +14,6 @@ IG.prototype.getAccountByName = function(userName) {
     return new Promise((resolve, reject) => {
       new Client.Account.searchForUser(session, userName)
         .then((result) => {
-          console.log(result);
           resolve(result);
         })
     })
@@ -22,12 +21,14 @@ IG.prototype.getAccountByName = function(userName) {
 }
 
 IG.prototype.getAccountById = function (userId) {
-  new Client.Session.create(device, storage, 'eatifyjohn', 'occsbootcamp')
+  return new Client.Session.create(device, storage, 'eatifyjohn', 'occsbootcamp')
     .then((session) => {
-      new Client.Account.getById(session, '654773758')
+      return new Promise((resolve, reject) => {
+        new Client.Account.getById(session, userId)
         .then((result) => {
-          console.log(result);
+          resolve(result);
         })
+      })
     })
 }
 

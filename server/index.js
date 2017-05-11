@@ -17,11 +17,12 @@ app.use(bodyParser.json());
 app.post('/account', (req, res) => {
   ig.getAccountByName(req.body.userName)
     .then((result) => {
-      res.json(result._params);
+      ig.getAccountById(result._params.id)
+        .then((idResult) => {
+          res.json(idResult._params);
+        })
     })
 })
-
-ig.getAccountById('654773758');
 
 const PORT = 5760;
 

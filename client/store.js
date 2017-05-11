@@ -11,8 +11,18 @@ const usernameInput = (state = '', action) => {
   }
 }
 
+const userProfile = (state = '', action) => {
+  switch (action.type) {
+    case 'SAVE_PROFILE':
+      return action.profile;
+    default:
+      return state;
+  }
+}
+
 const reducer = combineReducers({
-  usernameInput
+  usernameInput,
+  userProfile
 });
 
 const store = createStore(reducer);
