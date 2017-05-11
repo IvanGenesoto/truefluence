@@ -10,7 +10,9 @@ const UserProfile = props => {
     <div>
       <div>
         <div>
-          <img className='ui small image' src={ profile.picture } href={ profileLink }/>
+          <a href={ profileLink }>
+            <img className='ui small image' src={ profile.picture } />
+          </a>
         </div>
         <div>
           <ul className="ui list">
