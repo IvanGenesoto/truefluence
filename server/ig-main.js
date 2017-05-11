@@ -8,32 +8,33 @@ function IG() {
 
 }
 
-IG.prototype.getAccountByName = function(userName) {
-  return new Client.Session.create(device, storage, 'eatifyjohn', 'occsbootcamp')
-  .then((session) => {
-    return new Promise((resolve, reject) => {
-      new Client.Account.searchForUser(session, userName)
-        .then((result) => {
-          resolve(result);
-        })
-    })
+IG.prototype.getAccountByName = function(userName, session) {
+  return new Promise((resolve, reject) => {
+    new Client.Account.searchForUser(session, userName)
+      .then((result) => {
+        resolve(result);
+      });
   });
 }
 
-IG.prototype.getAccountById = function (userId) {
-  return new Client.Session.create(device, storage, 'eatifyjohn', 'occsbootcamp')
-    .then((session) => {
-      return new Promise((resolve, reject) => {
-        new Client.Account.getById(session, userId)
-        .then((result) => {
-          resolve(result);
-        })
-      })
-    })
+IG.prototype.getAccountById = function (userId, session) {
+  return new Promise((resolve, reject) => {
+    new Client.Account.getById(session, userId)
+    .then((result) => {
+      resolve(result);
+    });
+  });
 }
 
 IG.prototype.getPosts = function(userId) {
 
+}
+
+IG.prototype.initialize = function () {
+  return new Client.Session.create(device, storage, 'eatifyjohn', 'occsbootcamp')
+    .then((session) => {
+      return session;
+    })
 }
 
 module.exports = IG;
