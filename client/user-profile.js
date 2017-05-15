@@ -8,7 +8,6 @@ const UserProfile = props => {
   const profileLink = 'http://www.instagram.com/' + profile.username;
   const handleGetFollowers = event => {
     event.preventDefault();
-    let mioId = '231191164';
     fetch('/followers', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -68,4 +67,3 @@ const UserProfile = props => {
 }
 
 module.exports = UserProfile;
-
