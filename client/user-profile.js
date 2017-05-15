@@ -14,12 +14,9 @@ const UserProfile = props => {
       body: JSON.stringify({ userId: profile.id })
     })
       .then((result) => result.json())
-      .then((users) => {
-        console.log(users);
-        store.dispatch({
-          type: 'SEARCH_COMPLETE',
-          text: 'oh'
-        })
+      .then((followers) => {
+        console.log('number of followers:', followers.length);
+        
       })
   }
   const handleMedia = event => {

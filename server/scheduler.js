@@ -27,7 +27,7 @@ var currentSession = { initialized: false, session: {} };
 const chainExperiment = (interval, counter, startTime) => {
   function cb(interval, counter, startTime) {
     const dateNow = new Date();
-    ig.getAccountByName('shoenicee', currentSession.session)
+    ig.getFollowers('52139312', currentSession.session)
       .then((result) => {
         console.log(result._params.username);
         console.log('Interval: ' + interval + ' this iteration: ' + counter + ' duration: ' + (dateNow - startTime));

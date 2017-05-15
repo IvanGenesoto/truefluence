@@ -19,7 +19,7 @@ IG.prototype.getAccountByName = function(username, session) {
   });
 }
 
-// Feasible call rate: 115/min (~18 media per call)
+// Feasible call rate: ~115/min (~12 media per call so roughly 1,400 posts per minute)
 
 IG.prototype.getPosts = function (userId, session) {
   const posts = [];
@@ -59,18 +59,33 @@ IG.prototype.getAccountById = function (userId, session) {
   });
 }
 
-IG.prototype.getFollowers = function(userId, sessions) {
+IG.prototype.getFollowers = function(userId, session) {
+  const followers = [];
+  let counter = 0;
+  const startTime = new Date();
   return new Promise((resolve, reject) => {
-    new Client.Session.create(device, storage, 'eatifyjohn', 'occsbootcamp')
-      .then((session) => {
-        let feed = new Client.Feed.AccountFollowers(session, userId, 2000);
-          feed.get()
-            .then((results) => {
-              resolve(results.map((result) => {
-                return result._params;
-              }))
-            })
+    let feed = new Client.Feed.AccountFollowers(session, userId, 1000);
+    function cb() {
+      feed.get()
+      .then((result) => {
+        counter++;
+        result.map(user => { followers.push(user._params); });
+        if (feed.isMoreAvailable()) {
+          console.log('yes, more available');
+          console.log(followers.length);
+          console.log(counter);
+          setTimeout(() => {
+            cb();
+          }, 5000);
+        } else {
+          const endTime = new Date();
+          console.log('rate for this action (actions/minute):', counter/((endTime - startTime)/60000));
+          // console.log(followers);
+          resolve(followers);
+        }
       })
+    }
+    cb();
   })
 }
 
