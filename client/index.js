@@ -18,6 +18,54 @@ const render = () => {
   )
 }
 
+// temp csv code
+
+function profile(userName, userId, followers, pictureLink) {
+  this.userName = userName;
+  this.userId = userId;
+  this.followers = followers;
+  this.pictureLink = pictureLink;
+}
+
+function createProfilesFromCSV(csvData) {
+  var importProfiles = [];
+  var propertyNames = csvData[0];
+
+  for (var i = 1; i < csvData.length; i++) {
+    var tempProfile = new lead();
+    for (var j = 0; j < csvData[i].length; j++) {
+      tempLead[csvData[0][j]].field = csvData[i][j];
+    }
+    tempLead = assignNewId(tempLead);
+    importLeads.push(tempLead);
+  }
+  return importLeads;
+}
+
+// var $fileUpload = document.querySelector('#csv-upload');
+// $fileUpload.addEventListener('change', function (event) {
+//   var data = null;
+//   var file = event.target.files[0];
+//   var reader = new FileReader();
+//   var newLeads = [];
+
+//   grid.sort = { property: '', type: '' };
+//   reader.readAsText(file);
+//   reader.onload = function (loadEvent) {
+//     var csvData = loadEvent.target.result;
+
+//     data = $.csv.toArrays(csvData);
+//     if (data && data.length > 0) {
+//       alert('Imported' + ' ' + data.length + ' ' + 'rows.');
+//       Array.prototype.push.apply(grid.leads, createLeadsFromCSV(data));
+//       initializeLeadPage();
+//     }
+//     reader.onerror = function () {
+//       alert('Unable to read' + ' ' + file.fileName);
+//     }
+//   }
+// })
+
 store.subscribe(render);
 
 render();

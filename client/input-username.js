@@ -10,6 +10,9 @@ const UsernameInput = props => {
       text: event.target.value
     });
   };
+  const handleExperiment = event => {
+    fetch('/rate-experiment');
+  }
   const handleSubmit = event => {
     event.preventDefault();
     const username = store.getState().usernameInput;
@@ -27,6 +30,13 @@ const UsernameInput = props => {
         });
       })
   };
+  const handleCSV = event => {
+    fetch('/csv')
+      // .then((result) => result.json())
+      // .then((profiles) => {
+      //   console.log(profiles);
+      // })
+  }
   return (
     <div className='column'>
       <div className='ui action input'>
@@ -39,8 +49,15 @@ const UsernameInput = props => {
           className='ui button'
           onClick={ handleSubmit }>Search</button>
       </div>
+      <button
+        className='ui button'
+        onClick = { handleCSV }>Load from CSV</button>
+      <button
+        className='ui button'
+        onClick = { handleExperiment }>Rate Experiment Test</button>
     </div>
   );
 }
 
 module.exports = UsernameInput;
+

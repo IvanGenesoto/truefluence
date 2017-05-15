@@ -12,7 +12,7 @@ const UserProfile = props => {
     fetch('/followers', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ userId: mioId })
+      body: JSON.stringify({ userId: profile.id })
     })
       .then((result) => result.json())
       .then((users) => {
@@ -21,6 +21,20 @@ const UserProfile = props => {
           type: 'SEARCH_COMPLETE',
           text: 'oh'
         })
+      })
+  }
+  const handleMedia = event => {
+    console.log('handle media');
+    fetch('/media', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ userId: profile.id })
+    })
+      .then((result) => result.json())
+      .then((posts) => {
+        // console.log(posts);
+        console.log('number of posts: ', posts.length);
+        console.log('number of likes: ')
       })
   }
   return (
@@ -45,9 +59,13 @@ const UserProfile = props => {
         <button
           className='ui button'
           onClick={ handleGetFollowers }>Get List of Followers</button>
+        <button
+          className='ui button'
+          onClick={ handleMedia }>Get Post Details</button>
       </div>
     </div>
   );
 }
 
 module.exports = UserProfile;
+
