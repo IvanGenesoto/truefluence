@@ -16,27 +16,6 @@ IG.prototype.getAccountByName = function(username, session) {
       });
   });
 }
-// new Client.Session.create(device, storage, 'eatifyjohn', 'occsbootcamp')
-//   .then((session) => {
-//     let feed = new Client.Feed.UserMedia(session, '654773758', 1000);
-//     new Promise((resolve, reject) => {
-//       resolve(feed.get())
-//     })
-//       .then((results) => {
-//         console.log('number of media: ' + results.length);
-//         console.log(results);
-//         // let totalLikes = results.reduce()
-//         return feed.get();
-//       })
-//       .then((results) => {
-//         console.log(results);
-//         return feed.get();
-//       })
-//       .then((results) => {
-//         console.log(results);
-//         return 'lol';
-//       })
-//   })
 
 IG.prototype.getMedia = function (userId, session) {
   return new Promise((resolve, reject) => {
@@ -91,4 +70,3 @@ IG.prototype.initialize = function () {
 }
 
 module.exports = IG;
-

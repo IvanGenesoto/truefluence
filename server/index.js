@@ -155,10 +155,8 @@ app.get('/rate-experiment', (req, res) => {
 
 app.post('/followers', (req, res) => {
   const followerDetails = [];
-  // console.log(req.body.userId);
   ig.getPosts(req.body.userId, currentSession.session)
     .then((result) => {
-      // console.log(result);
       result.map((profile) => {
         ig.getAccountById(profile.id, currentSession.session)
           .then((detail) => {
@@ -172,7 +170,6 @@ app.post('/followers', (req, res) => {
 ig.initialize()
   .then((session) => {
     currentSession.session = session;
-    return 'i';
   });
 
 const PORT = 5760;
