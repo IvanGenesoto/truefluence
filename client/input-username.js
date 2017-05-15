@@ -32,10 +32,6 @@ const UsernameInput = props => {
   };
   const handleCSV = event => {
     fetch('/csv')
-      // .then((result) => result.json())
-      // .then((profiles) => {
-      //   console.log(profiles);
-      // })
   }
   return (
     <div className='column'>
@@ -60,4 +56,3 @@ const UsernameInput = props => {
 }
 
 module.exports = UsernameInput;
-

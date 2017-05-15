@@ -14,7 +14,6 @@ app.use(staticMiddleware);
 app.use(bodyParser.json());
 
 app.post('/account', (req, res) => {
-  // console.log(req.body.username);
   ig.getAccountByName(req.body.username, currentSession.session)
     .then((result) => {
       ig.getAccountById(result._params.id, currentSession.session)
@@ -56,49 +55,10 @@ function buildProfileList(userNames) {
   console.log(profiles);
 }
 
-// function buildFollowList(objTwitter) {
-//   return new Promise((resolve, reject) => {
-//     function cb(twit) {
-//       console.log('term to query: ' + twit.queryTerms[twit.queryPos]);
-//       twit.getSearch({ q: twit.queryTerms[twit.queryPos] })
-//       .then((result) => {
-//         var searchIds = [];
-//         result.statuses.forEach((status) => {
-//           if(!(status.user.following || status.user.follow_request_sent)) {
-//               searchIds.push(status.user.id_str);
-//             // }
-//           }
-//         })
-//         return searchIds;
-//       })
-//       .then((searchIds) => {
-//         database.getFollowedBy(twit.clientId)
-//           .then((result) => {
-//             var trimmedSearchIds = getUniqueIdsInA(searchIds, result);
-//             twit.followList = twit.followList.concat(trimmedSearchIds);
-//             console.log('follow list length: ' + twit.followList.length);
-//             if(twit.followList.length > 59) {
-//               resolve('gee');
-//             } else {
-//               twit.incrementQuery();
-//               cb(twit);
-//             }
-//           })
-//       })
-//     }
-//     cb(objTwitter);
-//   })
-// }
-
 app.post('/media', (req, res) => {
   new Promise((resolve, reject) => {
     ig.getMedia(req.body.userId, currentSession.session)
       .then(result => {
-        // console.log(result);
-        // const likeRatio = result.length / (result.likeCount.reduce((tot, val) => {
-        //   return tot + val;
-        // }))
-        // console.log('like ratio for user is: ', likeRatio);
         resolve(result);
       })
 
@@ -127,10 +87,6 @@ app.get('/csv', (req, res) => {
   .then((result) => {
     res.json(result);
   })
-  // buildProfileList(tempCSV)
-  //   .then((result) => {
-  //     console.log(result);
-  //   })
 })
 
 const rateTestIds = [

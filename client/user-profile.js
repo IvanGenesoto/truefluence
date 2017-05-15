@@ -31,7 +31,6 @@ const UserProfile = props => {
     })
       .then((result) => result.json())
       .then((posts) => {
-        // console.log(posts);
         console.log('number of posts: ', posts.length);
         console.log('number of likes: ')
       })

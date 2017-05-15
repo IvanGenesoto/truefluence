@@ -27,6 +27,7 @@
     "express": "^4.15.2",
     "instagram-private-api": "^0.5.16",
     "knex": "^0.13.0",
+    "material-ui": "^0.18.1",
     "node-schedule": "^1.2.1",
     "pg": "^6.1.5",
     "qs": "^6.4.0",

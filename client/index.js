@@ -18,8 +18,6 @@ const render = () => {
   )
 }
 
-// temp csv code
-
 function profile(userName, userId, followers, pictureLink) {
   this.userName = userName;
   this.userId = userId;
@@ -41,30 +39,6 @@ function createProfilesFromCSV(csvData) {
   }
   return importLeads;
 }
-
-// var $fileUpload = document.querySelector('#csv-upload');
-// $fileUpload.addEventListener('change', function (event) {
-//   var data = null;
-//   var file = event.target.files[0];
-//   var reader = new FileReader();
-//   var newLeads = [];
-
-//   grid.sort = { property: '', type: '' };
-//   reader.readAsText(file);
-//   reader.onload = function (loadEvent) {
-//     var csvData = loadEvent.target.result;
-
-//     data = $.csv.toArrays(csvData);
-//     if (data && data.length > 0) {
-//       alert('Imported' + ' ' + data.length + ' ' + 'rows.');
-//       Array.prototype.push.apply(grid.leads, createLeadsFromCSV(data));
-//       initializeLeadPage();
-//     }
-//     reader.onerror = function () {
-//       alert('Unable to read' + ' ' + file.fileName);
-//     }
-//   }
-// })
 
 store.subscribe(render);
 

@@ -23,10 +23,6 @@ IG.prototype.getMedia = function (userId, session) {
       feed.get()
         .then(result => {
           console.log(result.map(single => { console.log(single._params.likeCount) }));
-          // const likeRatio = result.length / (result._params.likeCount.reduce((tot, val) => {
-          //   return tot + val;
-          // }))
-          // console.log('like ratio for user is: ', likeRatio);
           resolve(result.map(post => { return post._params; }));
         })
   })
@@ -42,12 +38,6 @@ IG.prototype.getAccountById = function (userId, session) {
 }
 
 IG.prototype.getPosts = function(userId, sessions) {
-  // return new Promise((resolve, reject) => {
-  //   new Client.Feed.AccountFollowers(session, userId, 2000).get()
-  //     .then((result) => {
-  //       resolve(result);
-  //     })
-  // })
   return new Promise((resolve, reject) => {
     new Client.Session.create(device, storage, 'eatifyjohn', 'occsbootcamp')
       .then((session) => {
