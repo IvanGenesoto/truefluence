@@ -4,7 +4,7 @@ const path = require('path');
 const cookiePath = path.join(__dirname, '/cookies/eatifyjohn.json');
 const storage = new Client.CookieFileStorage(cookiePath);
 
-const GLOBAL_INTERVAL = 100;
+const GLOBAL_INTERVAL = 300;
 
 function IG() {
 
@@ -78,7 +78,7 @@ IG.prototype.getFollowers = function(userId, session) {
           console.log(counter);
           setTimeout(() => {
             cb();
-          }, 500);
+          }, GLOBAL_INTERVAL);
         } else {
           const endTime = new Date();
           console.log('rate for this action (actions/minute):', counter/((endTime - startTime)/60000));
