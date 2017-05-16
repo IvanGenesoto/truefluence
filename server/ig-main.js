@@ -50,6 +50,8 @@ IG.prototype.getPosts = function (userId, session) {
   })
 }
 
+// Feasible call rate: ~18/min (~196 followers per call so roughly 3,544 followers per minute)
+
 IG.prototype.getAccountById = function (userId, session) {
   return new Promise((resolve, reject) => {
     new Client.Account.getById(session, userId)
@@ -76,7 +78,7 @@ IG.prototype.getFollowers = function(userId, session) {
           console.log(counter);
           setTimeout(() => {
             cb();
-          }, 5000);
+          }, 500);
         } else {
           const endTime = new Date();
           console.log('rate for this action (actions/minute):', counter/((endTime - startTime)/60000));
