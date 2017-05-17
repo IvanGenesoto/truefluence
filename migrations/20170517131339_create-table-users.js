@@ -1,24 +1,26 @@
 
 exports.up = function(knex, Promise) {
   const query = knex.schema.createTable('users', table => {
-    table.increments('id');
-    table.string('username');
-    table.string('picture_url');
-    table.string('full_name');
+    table.increments('id').notNull();
+    table.string('username').notNull().defaultTo('');
+    table.string('picture_url').notNull().defaultTo('');
+    table.string('full_name').notNull().defaultTo('');
+    table.string('external_id').notNull();
     table.unique('external_id');
-    table.boolean('private');
-    table.integer('user_tags_count');
-    table.integer('following_count');
-    table.integer('follower_count');
-    table.string('bio');
-    table.integer('post_count');
-    table.string('external_url');
-    table.timestamp('created_at');
-    table.timestamp('updated_at');
+    table.boolean('private').notNull().defaultTo(false);
+    table.integer('user_tags_count').notNull().defaultTo(0);
+    table.integer('following_count').notNull().defaultTo(0);
+    table.integer('follower_count').notNull().defaultTo(0);
+    table.text('bio').notNull().defaultTo('');
+    table.integer('post_count').notNull().defaultTo(0);
+    table.string('external_url').notNull().defaultTo('');
+    table.timestamp('created_at').notNull();
+    table.timestamp('updated_at').notNull();
     table.string('instagram_token');
-    table.integer('recent_like_count');
-    table.integer('recent_comment_count');
-    table.decimal('truefluence_score');
+    table.unique('instagram_token');
+    table.integer('recent_like_count').notNull().defaultTo(0);
+    table.integer('recent_comment_count').notNull().defaultTo(0);
+    table.decimal('truefluence_score').notNull().defaultTo(0.0);
   });
 
   return query;
