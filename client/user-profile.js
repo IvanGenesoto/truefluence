@@ -14,12 +14,9 @@ const UserProfile = props => {
       body: JSON.stringify({ userId: profile.id })
     })
       .then((result) => result.json())
-      .then((users) => {
-        console.log(users);
-        store.dispatch({
-          type: 'SEARCH_COMPLETE',
-          text: 'oh'
-        })
+      .then((followers) => {
+        console.log('number of followers:', followers.length);
+        
       })
   }
   const handleMedia = event => {
@@ -31,8 +28,14 @@ const UserProfile = props => {
     })
       .then((result) => result.json())
       .then((posts) => {
-        console.log('number of posts: ', posts.length);
-        console.log('number of likes: ')
+        const likes = posts.map((post) => { return post.likeCount; }).reduce((tot, val) => { return tot + val; });
+        const comments = posts.map((post) => { return post.commentCount; }).reduce((tot, val) => { return tot + val; });
+        console.log('number of posts:', posts.length);
+        console.log('number of likes:', likes);
+        console.log('likes per post:', likes/posts.length);
+        console.log('number of comments:', comments);
+        console.log('comments per post:', comments/posts.length);
+        console.log('like ratio:', likes/profile.followerCount);
       })
   }
   return (
