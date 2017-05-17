@@ -26,7 +26,16 @@ Database.prototype.getFollowers = userId => {
   })
 }
 
-Database.prototype.createRelationship = (userId, followingId) => {
+Database.prototype.upsertRelationship = (userId, followingId) => {
+  return new Promise((resolve, reject) => {
+    knex('relationships')
+      .count('*')
+      .where('user_id', userId)
+      .andWhere('following_id', followingId)
+        .then(result => {
+          
+        })
+  })
   const timeNow = new Date(Date.now()).toISOString();
   const relationship = {
     user_id: userId,
@@ -37,4 +46,8 @@ Database.prototype.createRelationship = (userId, followingId) => {
   }
   return knex('relationships')
     .insert(relationship);
+}
+
+Database.prototype.upsertUser = params => {
+
 }
