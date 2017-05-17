@@ -56,16 +56,10 @@ function buildProfileList(userNames) {
 }
 
 app.post('/media', (req, res) => {
-  new Promise((resolve, reject) => {
-    ig.getMedia(req.body.userId, currentSession.session)
+    ig.getPosts(req.body.userId, currentSession.session)
       .then(result => {
-        resolve(result);
+        res.json(result);
       })
-
-  })
-    .then(list => {
-      res.json(list);
-    })
 })
 
 app.get('/csv', (req, res) => {
@@ -111,14 +105,8 @@ app.get('/rate-experiment', (req, res) => {
 
 app.post('/followers', (req, res) => {
   const followerDetails = [];
-  ig.getPosts(req.body.userId, currentSession.session)
+  ig.getFollowers(req.body.userId, currentSession.session)
     .then((result) => {
-      result.map((profile) => {
-        ig.getAccountById(profile.id, currentSession.session)
-          .then((detail) => {
-            console.log(detail._params);
-          })
-      })
       res.json(result);
     })
 })

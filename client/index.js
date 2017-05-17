@@ -4,6 +4,7 @@ const store = require('./store');
 
 const UsernameInput = require('./input-username');
 const UserProfile = require('./user-profile');
+const PostDetails = require('./post-details');
 
 const render = () => {
   const state = store.getState();
