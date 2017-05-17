@@ -6,7 +6,7 @@ exports.up = function(knex, Promise) {
     table.timestamp('created_at');
     table.timestamp('updated_at');
     table.boolean('following');
-    table.string('unique');
+    table.unique( ['user_id','following_id'] );
   })
 
   return query;

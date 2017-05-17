@@ -5,7 +5,7 @@ exports.up = function(knex, Promise) {
     table.string('username');
     table.string('picture_url');
     table.string('full_name');
-    table.string('external_id');
+    table.unique('external_id');
     table.boolean('private');
     table.integer('user_tags_count');
     table.integer('following_count');
@@ -19,7 +19,6 @@ exports.up = function(knex, Promise) {
     table.integer('recent_like_count');
     table.integer('recent_comment_count');
     table.decimal('truefluence_score');
-    table.string('unique');
   });
 
   return query;

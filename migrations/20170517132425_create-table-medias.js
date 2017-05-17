@@ -2,12 +2,12 @@
 exports.up = function(knex, Promise) {
   const query = knex.schema.createTable('medias', table => {
     table.increments('id');
-    table.string('external_id');
+    table.unique('external_id');
     table.integer('user_id');
     table.string('image_low');
     table.string('image_standard');
     table.string('image_thumbnail');
-    table.string('caption');
+    table.text('caption');
     table.string('link');
     table.specificType('user_tags', 'text[]');
     table.integer('like_count');
