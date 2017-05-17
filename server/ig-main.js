@@ -27,7 +27,7 @@ IG.prototype.getPosts = function (userId, session) {
   const startTime = new Date();
   return new Promise((resolve, reject) => {
     let feed = new Client.Feed.UserMedia(session, userId)
-    function cb() {
+    function retrieve() {
       feed.get()
       .then(result => {
         counter++;
@@ -37,7 +37,7 @@ IG.prototype.getPosts = function (userId, session) {
           console.log(posts.length);
           console.log(counter);
           setTimeout(() => {
-            cb();
+            retrieve();
           }, GLOBAL_INTERVAL);
         } else {
           const endTime = new Date();
@@ -46,7 +46,7 @@ IG.prototype.getPosts = function (userId, session) {
         }
       })
     }
-    cb();
+    retrieve();
   })
 }
 
@@ -67,7 +67,7 @@ IG.prototype.getFollowers = function(userId, session) {
   const startTime = new Date();
   return new Promise((resolve, reject) => {
     let feed = new Client.Feed.AccountFollowers(session, userId, 1000);
-    function cb() {
+    function retrieve() {
       feed.get()
       .then((result) => {
         counter++;
@@ -77,17 +77,18 @@ IG.prototype.getFollowers = function(userId, session) {
           console.log(followers.length);
           console.log(counter);
           setTimeout(() => {
-            cb();
+            retrieve();
           }, GLOBAL_INTERVAL);
         } else {
           const endTime = new Date();
           console.log('rate for this action (actions/minute):', counter/((endTime - startTime)/60000));
-          // console.log(followers);
           resolve(followers);
         }
+        // console.log(followers);
+        // resolve(followers);
       })
     }
-    cb();
+    retrieve();
   })
 }
 

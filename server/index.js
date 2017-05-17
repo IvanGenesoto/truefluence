@@ -107,12 +107,6 @@ app.post('/followers', (req, res) => {
   const followerDetails = [];
   ig.getFollowers(req.body.userId, currentSession.session)
     .then((result) => {
-      // result.map((profile) => {
-      //   ig.getAccountById(profile.id, currentSession.session)
-      //     .then((detail) => {
-      //       console.log(detail._params);
-      //     })
-      // })
       res.json(result);
     })
 })

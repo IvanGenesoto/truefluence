@@ -9,7 +9,10 @@
     "bundle:watch": "watchify client/ -vd -t babelify -o server/public/main.js",
     "start": "node .",
     "start:watch": "nodemon --ignore 'cookies/*.json' .",
-    "watch": "run-p start:watch bundle:watch"
+    "watch": "run-p start:watch bundle:watch",
+    "migrate:make": "knex migrate:make",
+    "migrate": "knex migrate:latest",
+    "rollback": "knex migrate:rollback"
   },
   "repository": {
     "type": "git",
