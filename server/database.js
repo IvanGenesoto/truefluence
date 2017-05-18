@@ -10,11 +10,11 @@ function Database() {
 
 }
 
-Database.prototype.clearTable = tablename => {
+Database.prototype.clearTable = function (tablename) {
   return knex(tableName).truncate();
 }
 
-Database.prototype.getFollowers = userId => {
+Database.prototype.getFollowers = function (userId) {
   return new Promise((resolve, reject) => {
     knex('relationships')
       .select('user_id')
@@ -26,7 +26,7 @@ Database.prototype.getFollowers = userId => {
   })
 }
 
-Database.prototype.createRelationship = (userId, followingId, following) => {
+Database.prototype.createRelationship = function (userId, followingId, following) {
   const timeNow = new Date(Date.now()).toISOString();
   const relationship = {
     user_id: userId,
@@ -39,7 +39,7 @@ Database.prototype.createRelationship = (userId, followingId, following) => {
     .insert(relationship);
 }
 
-Database.prototype.updateRelationship = (userId, followingId, following) => {
+Database.prototype.updateRelationship = function (userId, followingId, following) {
   const timeNow = new Date(Date.now()).toISOString();
   const relationship = {
     updated_at: timeNow,
@@ -51,7 +51,7 @@ Database.prototype.updateRelationship = (userId, followingId, following) => {
     .update(relationship);
 }
 
-Database.prototype.upsertRelationship = (userId, followingId, following = true) => {
+Database.prototype.upsertRelationship = function (userId, followingId, following = true) {
   return new Promise((resolve, reject) => {
     knex('relationships')
       .count('*')
@@ -81,6 +81,13 @@ Database.prototype.upsertRelationship = (userId, followingId, following = true) 
   })
 }
 
+Database.prototype.getIdFromExternalId = function (externalId, tableName) {
+  return knex(tableName)
+    .where('external_id', externalId)
+    .select('id')
+    .limit(1)
+}
+
 Database.prototype.createUser = function (user) {
   const timeNow = new Date(Date.now()).toISOString();
   user.created_at = timeNow;
@@ -89,7 +96,7 @@ Database.prototype.createUser = function (user) {
     .insert(user);
 }
 
-Database.prototype.updateUser = user => {
+Database.prototype.updateUser = function (user) {
   const timeNow = new Date(Date.now()).toISOString();
   user.updated_at = timeNow;
   return knex('users')
@@ -97,8 +104,7 @@ Database.prototype.updateUser = user => {
     .update(user);
 }
 
-Database.prototype.upsertUser = user => {
-  let db = this;
+Database.prototype.upsertUser = function (user) {
   return new Promise((resolve, reject) => {
     knex('users')
       .count('*')

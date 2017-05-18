@@ -26,6 +26,7 @@
   },
   "homepage": "https://github.com/jyaaan/influencer-deluxe#readme",
   "dependencies": {
+    "async": "^2.4.0",
     "body-parser": "^1.17.1",
     "express": "^4.15.2",
     "instagram-private-api": "^0.5.16",

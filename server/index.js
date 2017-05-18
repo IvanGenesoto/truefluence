@@ -7,8 +7,9 @@ const ig = new IG();
 const app = express();
 const publicPath = path.join(__dirname, '/public');
 const staticMiddleware = express.static(publicPath);
-var Database = require('./database').Database;
-var database = new Database();
+const Database = require('./database').Database;
+const database = new Database();
+const async = require('async');
 
 const currentSession = { initialized: false, session: {} };
 
@@ -44,16 +45,60 @@ app.post('/account', (req, res) => {
 })
 
 app.post('/gather', (req, res) => {
+  var userId;
   ig.getAccountById(req.body.userId, currentSession.session)
     .then((idResult) => {
       const user = formatUser(idResult._params);
       database.upsertUser(user)
         .then(result => {
-          res.json(user);
+          database.getIdFromExternalId(req.body.userId, 'users')
+            .then(resulty => {
+              console.log('user internal id', resulty[0].id);
+              userId = resulty[0].id;
+            })
+          // res.json(user);
+        })
+    })
+    .then(result => {
+      ig.getFollowers(req.body.userId, currentSession.session)
+        .then((result) => {
+          const followerIds = [];
+          async.mapSeries(result, (follower, asyncCallback) => {
+            new Promise((resolve, reject) => {
+              setTimeout(() => {
+                resolve('end');
+              }, 3000)
+            })
+              .then(prod => {
+                ig.getAccountById(follower.id, currentSession.session)
+                .then(idResult => {
+                  const user = formatUser(idResult._params);
+                  database.upsertUser(user)
+                  .then(result => {
+                    console.log('follower added');
+                    database.getIdFromExternalId(follower.id, 'users')
+                    .then(result => {
+                      database.upsertRelationship(result[0].id, userId)
+                        .then(result => {
+                          console.log(follower);
+                          console.log(prod);
+                          asyncCallback();
+                        })
+                    })
+                  })
+                })
+              })
+          })
+          // result.map(follower => {
+          //   followerIds.push(follower.id);
+          // })
+          res.json(followerIds);
         })
     })
 })
-
+const asyncCallback = () => {
+  console.log('called back');
+}
 const tempCSV = [
   'eatify',
   '123chocula',
