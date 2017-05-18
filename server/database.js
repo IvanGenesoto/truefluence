@@ -36,7 +36,7 @@ Database.prototype.createRelationship = (userId, followingId, following) => {
     following: following
   };
   return knex('relationships')
-  .insert(relationship);
+    .insert(relationship);
 }
 
 Database.prototype.updateRelationship = (userId, followingId, following) => {
@@ -76,18 +76,52 @@ Database.prototype.upsertRelationship = (userId, followingId, following = true) 
                 console.log('could not create relationship for', userId);
               });
           }
+          resolve('complete');
         })
   })
 }
 
-Database.prototype.createUser = params => {
-
+Database.prototype.createUser = user => {
+  const timeNow = new Date(Date.now()).toISOString();
+  user.created_at = timeNow;
+  user.updated_at = timeNow;
+  return knex('users')
+    .insert(user);
 }
 
-Database.prototype.updateUser = params => {
-  
+Database.prototype.updateUser = user => {
+  const timeNow = new Date(Date.now()).toISOString();
+  user.updated_at = timeNow;
+  return knex('users')
+    .where('user_id', user.user_id)
+    .update(user);
 }
 
-Database.prototype.upsertUser = params => {
-
+Database.prototype.upsertUser = user => {
+  return new Promise((resolve, reject) => {
+    knex('users')
+      .count('*')
+      .where('user_id', user.user_id)
+      .then(result => {
+        const count = Number(result[0].count);
+        if (count > 0) {
+          this.updateUser(user)
+            .then(result => {
+              console.log('user updated');
+            })
+            .catch(err => {
+              console.log('error updating user');
+            })
+        } else {
+          this.createUser(user)
+            .then(result => {
+              console.log('user created');
+            })
+            .catch(err => {
+              console.log('error creating user');
+            })
+        }
+        resolve('complete');
+      })
+  })
 }
