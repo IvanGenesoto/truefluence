@@ -7,18 +7,49 @@ const ig = new IG();
 const app = express();
 const publicPath = path.join(__dirname, '/public');
 const staticMiddleware = express.static(publicPath);
+var Database = require('./database').Database;
+var database = new Database();
 
 const currentSession = { initialized: false, session: {} };
 
 app.use(staticMiddleware);
 app.use(bodyParser.json());
 
+const formatUser = rawJSON => {
+  const user = {
+    username: rawJSON.username,
+    picture_url: rawJSON.picture,
+    full_name: rawJSON.fullName,
+    external_id: rawJSON.id,
+    private: rawJSON.isPrivate,
+    user_tags_count: rawJSON.usertagsCount,
+    following_count: rawJSON.followingCount,
+    follower_count: rawJSON.followerCount,
+    bio: rawJSON.biography,
+    post_count: rawJSON.mediaCount,
+    external_url: rawJSON.externalUrl
+  }
+  return user;
+}
+
 app.post('/account', (req, res) => {
   ig.getAccountByName(req.body.username, currentSession.session)
     .then((result) => {
       ig.getAccountById(result._params.id, currentSession.session)
         .then((idResult) => {
+
           res.json(idResult._params);
+        })
+    })
+})
+
+app.post('/gather', (req, res) => {
+  ig.getAccountById(req.body.userId, currentSession.session)
+    .then((idResult) => {
+      const user = formatUser(idResult._params);
+      database.upsertUser(user)
+        .then(result => {
+          res.json(user);
         })
     })
 })

@@ -1,8 +1,8 @@
 const knex = require('knex')({
-  clinet: 'postgresql',
+  client: 'postgresql',
   connection: {
-    user: 'jyaaan',
-    databae: 'truefluence'
+    user: 'johny',
+    database: 'truefluence'
   }
 });
 
@@ -81,7 +81,7 @@ Database.prototype.upsertRelationship = (userId, followingId, following = true) 
   })
 }
 
-Database.prototype.createUser = user => {
+Database.prototype.createUser = function (user) {
   const timeNow = new Date(Date.now()).toISOString();
   user.created_at = timeNow;
   user.updated_at = timeNow;
@@ -93,15 +93,16 @@ Database.prototype.updateUser = user => {
   const timeNow = new Date(Date.now()).toISOString();
   user.updated_at = timeNow;
   return knex('users')
-    .where('user_id', user.user_id)
+    .where('external_id', user.external_id)
     .update(user);
 }
 
 Database.prototype.upsertUser = user => {
+  let db = this;
   return new Promise((resolve, reject) => {
     knex('users')
       .count('*')
-      .where('user_id', user.user_id)
+      .where('external_id', user.external_id)
       .then(result => {
         const count = Number(result[0].count);
         if (count > 0) {
@@ -125,3 +126,5 @@ Database.prototype.upsertUser = user => {
       })
   })
 }
+
+exports.Database = Database;
