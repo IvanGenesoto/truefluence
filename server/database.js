@@ -1,10 +1,5 @@
-const knex = require('knex')({
-  client: 'postgresql',
-  connection: {
-    user: 'johny',
-    database: 'truefluence'
-  }
-});
+const databaseConfig = require(./.database-config);
+const knex = require('knex')(databaseConfig);
 
 function Database() {
 
