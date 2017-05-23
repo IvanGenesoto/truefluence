@@ -1,5 +1,8 @@
 const React = require('react');
 const store = require('./store');
+const http = require('http');
+var request = require('request');
+const https = require('https');
 
 
 const UsernameInput = props => {
@@ -10,25 +13,7 @@ const UsernameInput = props => {
       text: event.target.value
     });
   };
-  const handleExperiment = event => {
-    var experimentRequest = new Request('https://www.instagram.com/eatify/?__a=1');
 
-    fetch(experimentRequest, {
-      method: 'GET'
-    })
-      // .then(result => result.json())
-      // .then(scrape => {
-      //   console.log(scrape);
-      // })
-      .then(result => {
-        console.log(result);
-      })
-  }
-      //   mode: 'no-cors'
-      // headers: { 
-      //   'Access-Control-Allow-Origin': '*'
-      //   'Content-Type': 'multipart/form-data'
-      // }
   const handleSubmit = event => {
     event.preventDefault();
     const username = store.getState().usernameInput;
@@ -64,9 +49,6 @@ const UsernameInput = props => {
       <button
         className='ui button'
         onClick = { handleCSV }>Load from CSV</button>
-      <button
-        className='ui button'
-        onClick = { handleExperiment }>Scraping Experiment</button>
     </div>
   );
 }

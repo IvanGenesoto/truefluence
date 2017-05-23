@@ -10,6 +10,9 @@ const staticMiddleware = express.static(publicPath);
 const Database = require('./database').Database;
 const database = new Database();
 const async = require('async');
+const ParseScrape = require('./parse-scrape');
+const Scraper = require('./scraper');
+const Metrics = require('./metrics');
 
 const currentSession = { initialized: false, session: {} };
 
@@ -45,57 +48,68 @@ app.post('/account', (req, res) => {
 })
 
 app.post('/gather', (req, res) => {
-  var userId;
-  ig.getAccountById(req.body.userId, currentSession.session)
-    .then((idResult) => {
-      const user = formatUser(idResult._params);
-      database.upsertUser(user)
-        .then(result => {
-          database.getIdFromExternalId(req.body.userId, 'users')
-            .then(resulty => {
-              console.log('user internal id', resulty[0].id);
-              userId = resulty[0].id;
-            })
-          // res.json(user);
-        })
-    })
-    .then(result => {
-      ig.getFollowers(req.body.userId, currentSession.session)
-        .then((result) => {
-          const followerIds = [];
-          async.mapSeries(result, (follower, asyncCallback) => {
-            new Promise((resolve, reject) => {
-              setTimeout(() => {
-                resolve('end');
-              }, 3000)
-            })
-              .then(prod => {
-                ig.getAccountById(follower.id, currentSession.session)
-                .then(idResult => {
-                  const user = formatUser(idResult._params);
-                  database.upsertUser(user)
-                  .then(result => {
-                    console.log('follower added');
-                    database.getIdFromExternalId(follower.id, 'users')
-                    .then(result => {
-                      database.upsertRelationship(result[0].id, userId)
-                        .then(result => {
-                          console.log(follower);
-                          console.log(prod);
-                          asyncCallback();
-                        })
-                    })
-                  })
+    var counter = 0;
+    const startTime = new Date();
+    Scraper(req.body.username)
+      .then(primary => {
+        // console.log(primary.user);
+        // console.log(primary.medias);
+        Metrics(primary.user, primary.medias);
+        ig.getFollowers(primary.user.external_id, currentSession.session)
+          .then(followers => {
+            async.mapSeries(followers, (follower, next) => {
+              Scraper(follower.username)
+                .then(nextUser => {
+                  Metrics(nextUser.user, nextUser.medias);
+                  counter++;
+                  console.log(counter,'out of', followers.length);
+                  // console.log(user.username);
+                  // setTimeout(next, 100);
+                  next();
                 })
-              })
+                .catch(err => {
+                  console.error(err);
+                })
+            }, (err, res) => {
+              var endTime = new Date();
+              console.log('elapsed time:', endTime - startTime);
+            })
           })
-          // result.map(follower => {
-          //   followerIds.push(follower.id);
-          // })
-          res.json(followerIds);
-        })
-    })
-})
+      })
+      .catch(err => {
+        console.error(err);
+      })
+  // var userId;
+  // ig.getAccountById(req.body.userId, currentSession.session)
+  //   .then((idResult) => {
+  //     const user = formatUser(idResult._params);
+  //     database.upsertUser(user)
+  //       .then(result => {
+  //         database.getIdFromExternalId(req.body.userId, 'users')
+  //           .then(resulty => {
+  //             console.log('user internal id', resulty[0].id);
+  //             userId = resulty[0].id;
+  //           })
+  //       })
+  //   })
+  //   .then(result => {
+  //     ig.getFollowers(req.body.userId, currentSession.session)
+  //       .then((result) => {
+  //         const followerIds = [];
+  //         async.mapSeries(result, (follower, asyncCallback) => {
+  //           new Promise((resolve, reject) => {
+  //             setTimeout(() => {
+  //               resolve('end');
+  //             }, 3000)
+  //           })
+
+  //         })
+  //         res.json(followerIds);
+  //       })
+  //   })
+  
+});
+
 const asyncCallback = () => {
   console.log('called back');
 }
@@ -166,19 +180,6 @@ for (let i = 0; i < 2000; i++) {
   rateTestIds.push('4634067144');
 }
 
-app.get('/rate-experiment', (req, res) => {
-  let counter = 1;
-  console.log('hello catie');
-  rateTestIds.map(id => {
-    ig.getAccountById(id, currentSession.session)
-      .then(detail => {
-        console.log(counter);
-        console.log(new Date());
-        counter++;
-      })
-  })
-})
-
 app.post('/followers', (req, res) => {
   const followerDetails = [];
   ig.getFollowers(req.body.userId, currentSession.session)
@@ -197,3 +198,25 @@ const PORT = 5760;
 app.listen(PORT, () => {
   console.log('listening on port: ', PORT);
 })
+
+// defunct gather code. use for relationship logging later.
+
+// .then(prod => {
+//   ig.getAccountById(follower.id, currentSession.session)
+//   .then(idResult => {
+//     const user = formatUser(idResult._params);
+//     database.upsertUser(user)
+//     .then(result => {
+//       console.log('follower added');
+//       database.getIdFromExternalId(follower.id, 'users')
+//       .then(result => {
+//         database.upsertRelationship(result[0].id, userId)
+//           .then(result => {
+//             console.log(follower);
+//             console.log(prod);
+//             asyncCallback();
+//           })
+//       })
+//     })
+//   })
+// })
