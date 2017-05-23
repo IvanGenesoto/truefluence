@@ -14,18 +14,21 @@ const UsernameInput = props => {
     var experimentRequest = new Request('https://www.instagram.com/eatify/?__a=1');
 
     fetch(experimentRequest, {
-      method: 'POST',
-      mode: 'no-cors',
-      headers: { 
-        'Access-Control-Allow-Origin': '*',
-        'Content-Type': 'multipart/form-data'
-      }
+      method: 'GET'
     })
-      .then(result => result.json())
-      .then(scrape => {
-        console.log(scrape);
+      // .then(result => result.json())
+      // .then(scrape => {
+      //   console.log(scrape);
+      // })
+      .then(result => {
+        console.log(result);
       })
   }
+      //   mode: 'no-cors'
+      // headers: { 
+      //   'Access-Control-Allow-Origin': '*'
+      //   'Content-Type': 'multipart/form-data'
+      // }
   const handleSubmit = event => {
     event.preventDefault();
     const username = store.getState().usernameInput;
