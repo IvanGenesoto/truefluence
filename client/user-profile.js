@@ -16,7 +16,7 @@ const UserProfile = props => {
       .then((result) => result.json())
       .then((followers) => {
         console.log('number of followers:', followers.length);
-        
+
       })
   }
   const handleMedia = event => {
@@ -37,6 +37,18 @@ const UserProfile = props => {
         console.log('comments per post:', comments/posts.length);
         console.log('like ratio:', likes/profile.followerCount);
       })
+  }
+  const handleGather = event => {
+    console.log('handle gather');
+    fetch('/gather', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ userId: profile.id })
+    })
+    .then((result) => result.json())
+    .then((user) => {
+      console.log(user);
+    })
   }
   return (
     <div>
@@ -63,6 +75,9 @@ const UserProfile = props => {
         <button
           className='ui button'
           onClick={ handleMedia }>Get Post Details</button>
+        <button
+          className='ui button'
+          onClick={ handleGather }>Gather User</button>
       </div>
     </div>
   );

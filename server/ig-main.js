@@ -50,6 +50,11 @@ IG.prototype.getPosts = function (userId, session) {
   })
 }
 
+IG.prototype.processFollowers = function (userId, session, followerIds) {
+  return new Promise((resolve, reject) => {
+  })
+}
+
 // Feasible call rate: ~18/min (~196 followers per call so roughly 3,544 followers per minute)
 
 IG.prototype.getAccountById = function (userId, session) {
@@ -72,20 +77,19 @@ IG.prototype.getFollowers = function(userId, session) {
       .then((result) => {
         counter++;
         result.map(user => { followers.push(user._params); });
-        if (feed.isMoreAvailable()) {
-          console.log('yes, more available');
-          console.log(followers.length);
-          console.log(counter);
-          setTimeout(() => {
-            retrieve();
-          }, GLOBAL_INTERVAL);
-        } else {
-          const endTime = new Date();
-          console.log('rate for this action (actions/minute):', counter/((endTime - startTime)/60000));
-          resolve(followers);
-        }
-        // console.log(followers);
-        // resolve(followers);
+        // if (feed.isMoreAvailable()) {
+        //   console.log('yes, more available');
+        //   console.log(followers.length);
+        //   console.log(counter);
+        //   setTimeout(() => {
+        //     retrieve();
+        //   }, GLOBAL_INTERVAL);
+        // } else {
+        //   const endTime = new Date();
+        //   console.log('rate for this action (actions/minute):', counter/((endTime - startTime)/60000));
+        //   resolve(followers);
+        // }
+        resolve(followers);
       })
     }
     retrieve();
