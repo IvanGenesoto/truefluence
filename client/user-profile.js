@@ -1,5 +1,5 @@
 const React = require('react');
-const store = require('./store');
+const { store, fetcher } = require('./store');
 
 const UserProfile = props => {
   const profile = store.getState().userProfile;

@@ -1,9 +1,23 @@
 const React = require('react');
-const store = require('./store');
+const { store, fetcher } = require('./store');
 const http = require('http');
 var request = require('request');
-// var Browser = require('zombie');
 const https = require('https');
+
+// const fetcher = () => {
+//   https.get('https://www.instagram.com/tennishealthfitness/?__a=1', (res) => {
+//     console.log('statusCode:', res.statusCode);
+//     console.log('headers:', res.headers);
+
+//     res.on('data', (d) => {
+//       process.stdout.write(d);
+//   });
+
+//   }).on('error', (e) => {
+//       console.error(e);
+//   });
+// }
+fetcher();
 
 const UsernameInput = props => {
   const { text } = props;
@@ -14,18 +28,26 @@ const UsernameInput = props => {
     });
   };
   const handleExperiment = event => {
+    // var fetcher = require('node-fetch');
+    // fetcher();
+    // fetcher('https://www.instagram.com/tennishealthfitness/?__a=1').then(function(response) {
+    //     // Convert to JSON
+    //     return response.json();
+    // }).then(function(j) {
+    //     // Yay, `j` is a JavaScript object
+    //     console.log(j);
+    // });
+    // https.get('https://www.instagram.com/tennishealthfitness/?__a=1', (res) => {
+    //     console.log('statusCode:', res.statusCode);
+    // console.log('headers:', res.headers);
 
-    https.get('https://www.instagram.com/tennishealthfitness/?__a=1', (res) => {
-        console.log('statusCode:', res.statusCode);
-    console.log('headers:', res.headers);
+    // res.on('data', (d) => {
+    //     process.stdout.write(d);
+    // });
 
-    res.on('data', (d) => {
-        process.stdout.write(d);
-    });
-
-    }).on('error', (e) => {
-        console.error(e);
-    });
+    // }).on('error', (e) => {
+    //     console.error(e);
+    // });
     // var experimentRequest = new Request('https://www.instagram.com/eatify/?__a=1');
 
     // fetch(experimentRequest, {
