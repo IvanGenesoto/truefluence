@@ -11,7 +11,20 @@ const UsernameInput = props => {
     });
   };
   const handleExperiment = event => {
-    fetch('/rate-experiment');
+    var experimentRequest = new Request('https://www.instagram.com/eatify/?__a=1');
+
+    fetch(experimentRequest, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 
+        'Access-Control-Allow-Origin': '*',
+        'Content-Type': 'multipart/form-data'
+      }
+    })
+      .then(result => result.json())
+      .then(scrape => {
+        console.log(scrape);
+      })
   }
   const handleSubmit = event => {
     event.preventDefault();
@@ -50,7 +63,7 @@ const UsernameInput = props => {
         onClick = { handleCSV }>Load from CSV</button>
       <button
         className='ui button'
-        onClick = { handleExperiment }>Rate Experiment Test</button>
+        onClick = { handleExperiment }>Scraping Experiment</button>
     </div>
   );
 }

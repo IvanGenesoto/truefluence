@@ -8,7 +8,7 @@
     "bundle": "browserify client/ -t babelify -o server/public/main.js",
     "bundle:watch": "watchify client/ -vd -t babelify -o server/public/main.js",
     "start": "node .",
-    "start:watch": "nodemon --ignore 'cookies/*.json' .",
+    "start:watch": "nodemon --ignore cookies/*.json --ignore server/cookies/*.json .",
     "watch": "run-p start:watch bundle:watch",
     "migrate:make": "knex migrate:make",
     "migrate": "knex migrate:latest",
