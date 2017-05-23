@@ -26,20 +26,5 @@ const reducer = combineReducers({
 });
 
 const store = createStore(reducer);
-function fetcher() {
-  https.get('https://www.instagram.com/tennishealthfitness/?__a=1', (res) => {
-    console.log('statusCode:', res.statusCode);
-    console.log('headers:', res.headers);
 
-    res.on('data', (d) => {
-      process.stdout.write(d);
-  });
-
-  }).on('error', (e) => {
-      console.error(e);
-  });
-}
-module.exports = {
-  store: store,
-  fetcher: fetcher
-};
+module.exports = store;

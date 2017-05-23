@@ -1,5 +1,5 @@
 const React = require('react');
-const { store, fetcher } = require('./store');
+const store = require('./store');
 
 const UserProfile = props => {
   const profile = store.getState().userProfile;
@@ -43,7 +43,7 @@ const UserProfile = props => {
     fetch('/gather', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ userId: profile.id })
+      body: JSON.stringify({ username: profile.username })
     })
     .then((result) => result.json())
     .then((user) => {

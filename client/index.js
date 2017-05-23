@@ -1,7 +1,6 @@
 const React = require('react');
 const ReactDOM = require('react-dom');
-const { store, fetcher } = require('./store');
-
+const store = require('./store');
 const UsernameInput = require('./input-username');
 const UserProfile = require('./user-profile');
 const PostDetails = require('./post-details');

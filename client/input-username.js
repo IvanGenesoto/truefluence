@@ -1,5 +1,5 @@
 const React = require('react');
-const { store, fetcher } = require('./store');
+const store = require('./store');
 const http = require('http');
 var request = require('request');
 const https = require('https');
@@ -13,9 +13,6 @@ const UsernameInput = props => {
       text: event.target.value
     });
   };
-  const handleExperiment = event => {
-
-  }
 
   const handleSubmit = event => {
     event.preventDefault();
@@ -52,9 +49,6 @@ const UsernameInput = props => {
       <button
         className='ui button'
         onClick = { handleCSV }>Load from CSV</button>
-      <button
-        className='ui button'
-        onClick = { handleExperiment }>Scraping Experiment</button>
     </div>
   );
 }
