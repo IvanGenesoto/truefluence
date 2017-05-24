@@ -35,22 +35,19 @@ const UsernameInput = props => {
     fetch('/csv')
   }
   return (
-    <div className='column'>
+    <div className='four column centered row'>
       <div className='ui action input'>
-        <input
-          type='text'
-          placeholder='IG Username'
-          onChange={ handleChange }
-          ></input>
-        <button
-          className='ui button'
-          onClick={ handleSubmit }>Search</button>
+          <input
+            type='text'
+            placeholder='IG Username'
+            onChange={ handleChange }
+            ></input>
+          <button
+            className='ui button column'
+            onClick={ handleSubmit }>Search</button>
       </div>
-      <button
-        className='ui button'
-        onClick = { handleCSV }>Load from CSV</button>
     </div>
   );
 }
-
+      
 module.exports = UsernameInput;

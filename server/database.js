@@ -1,5 +1,12 @@
-const databaseConfig = require(./.database-config);
-const knex = require('knex')(databaseConfig);
+const databaseConfig = require('./database-config');
+const knex = require('knex')({
+  client: 'postgresql',
+  connection: {
+    user: 'johny',
+    password: 'peanut',
+    database: 'truefluence'
+  }
+});
 
 function Database() {
 
@@ -80,7 +87,7 @@ Database.prototype.getIdFromExternalId = function (externalId, tableName) {
   return knex(tableName)
     .where('external_id', externalId)
     .select('id')
-    .limit(1)
+    .limit(1);
 }
 
 Database.prototype.createUser = function (user) {
@@ -99,6 +106,40 @@ Database.prototype.updateUser = function (user) {
     .update(user);
 }
 
+Database.prototype.upsertMedia = function (media) {
+  return new Promise((resolve, reject) => {
+    knex('medias')
+      .count('*')
+      .where('external_id', media.external_id)
+      .then(result => {
+        const count = Number(result[0].count);
+        if (count> 0) {
+          // do nothing for now
+        } else {
+          this.createMedia(media)
+            .then(result => {
+              //success
+              resolve('complete');
+            })
+            .catch(err => {
+              console.error(err);
+            })
+        }
+      })
+  })
+}
+
+Database.prototype.usernameExists = function (username) {
+  return new Promise((resolve, reject) => {
+    knex('users')
+      .count('*')
+      .where('username', username)
+      .then(result => {
+        resolve(result[0].count > 0);
+      })
+  })
+}
+
 Database.prototype.upsertUser = function (user) {
   return new Promise((resolve, reject) => {
     knex('users')
@@ -107,30 +148,45 @@ Database.prototype.upsertUser = function (user) {
       .then(result => {
         const count = Number(result[0].count);
         if (count > 0) {
-          // this.updateUser(user)
-          //   .then(result => {
-          //     console.log('user updated');
-          //   })
-          //   .catch(err => {
-          //     console.log('error updating user');
-          //   })
+          this.updateUser(user)
+            .then(result => {
+              console.log('user updated');
+              resolve(result);
+            })
+            .catch(err => {
+              console.log('error updating user');
+            })
         } else {
           this.createUser(user)
             .then(result => {
               console.log('user created');
+              resolve(result);
             })
             .catch(err => {
-              console.log('error creating user');
+              console.error(err);
             })
         }
-        resolve('complete');
+        // resolve('complete');
       })
   })
 }
 
 Database.prototype.createMedia = function (media) {
   const timeNow = new Date(Date.now()).toISOString();
-  
+  media.created_at = timeNow;
+  media.updated_at = timeNow;
+  return knex('medias')
+    .insert(media);
 }
+
+Database.prototype.updateMedia = function (media) {
+  const timeNow = new Date(Date.now()).toISOString();
+  media.updated_at = timeNow;
+  return knex('medias')
+    .where('external_id', media.external_id)
+    .update(media);
+}
+
+
 
 exports.Database = Database;
