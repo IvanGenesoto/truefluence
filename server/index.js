@@ -47,34 +47,48 @@ app.post('/account', (req, res) => {
     })
 })
 
+const scrapeSave = username => {
+  return new Promise((resolve, reject) => {
+    Scraper(username)
+      .then(primary => {
+        Metrics(primary.user, primary.medias);
+        database.upsertUser(primary.user)
+          .then(result => {
+            // log medias here.
+          })
+      })
+  });
+}
+
+const scrapeRelateSave = (username, ownerId) => {
+
+}
+
 app.post('/gather', (req, res) => {
     var counter = 0;
     const startTime = new Date();
     Scraper(req.body.username)
       .then(primary => {
-        // console.log(primary.user);
-        // console.log(primary.medias);
+        console.log(primary.medias);
         Metrics(primary.user, primary.medias);
-        ig.getFollowers(primary.user.external_id, currentSession.session)
-          .then(followers => {
-            async.mapSeries(followers, (follower, next) => {
-              Scraper(follower.username)
-                .then(nextUser => {
-                  Metrics(nextUser.user, nextUser.medias);
-                  counter++;
-                  console.log(counter,'out of', followers.length);
-                  // console.log(user.username);
-                  // setTimeout(next, 100);
-                  next();
-                })
-                .catch(err => {
-                  console.error(err);
-                })
-            }, (err, res) => {
-              var endTime = new Date();
-              console.log('elapsed time:', endTime - startTime);
-            })
-          })
+        // ig.getFollowers(primary.user.external_id, currentSession.session)
+        //   .then(followers => {
+        //     async.mapSeries(followers, (follower, next) => {
+        //       Scraper(follower.username)
+        //         .then(nextUser => {
+        //           Metrics(nextUser.user, nextUser.medias);
+        //           counter++;
+        //           console.log(counter,'out of', followers.length);
+        //           next();
+        //         })
+        //         .catch(err => {
+        //           console.error(err);
+        //         })
+        //     }, (err, res) => {
+        //       var endTime = new Date();
+        //       console.log('elapsed time:', endTime - startTime);
+        //     })
+        //   })
       })
       .catch(err => {
         console.error(err);

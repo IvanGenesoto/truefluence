@@ -55,13 +55,13 @@ Database.prototype.upsertRelationship = function (userId, followingId, following
         .then(result => {
           const count = Number(result[0].count);
           if (count > 0) {
-            this.updateRelationship(userId, followingId, following)
-              .then(result => {
-                console.log('relationship updated for', userId);
-              })
-              .catch(err => {
-                console.log('could not update relationship for', userId);
-              });
+            // this.updateRelationship(userId, followingId, following)
+            //   .then(result => {
+            //     console.log('relationship updated for', userId);
+            //   })
+            //   .catch(err => {
+            //     console.log('could not update relationship for', userId);
+            //   });
           } else {
             this.createRelationship(userId, followingId, following)
               .then(result => {
@@ -107,13 +107,13 @@ Database.prototype.upsertUser = function (user) {
       .then(result => {
         const count = Number(result[0].count);
         if (count > 0) {
-          this.updateUser(user)
-            .then(result => {
-              console.log('user updated');
-            })
-            .catch(err => {
-              console.log('error updating user');
-            })
+          // this.updateUser(user)
+          //   .then(result => {
+          //     console.log('user updated');
+          //   })
+          //   .catch(err => {
+          //     console.log('error updating user');
+          //   })
         } else {
           this.createUser(user)
             .then(result => {
@@ -126,6 +126,11 @@ Database.prototype.upsertUser = function (user) {
         resolve('complete');
       })
   })
+}
+
+Database.prototype.createMedia = function (media) {
+  const timeNow = new Date(Date.now()).toISOString();
+  
 }
 
 exports.Database = Database;
