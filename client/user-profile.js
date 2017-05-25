@@ -51,7 +51,7 @@ const UserProfile = props => {
     })
   }
   return (
-    <div className='ten column centered row'>
+    <div className='ui ten column centered row'>
       <div>
         <div>
           <a href={ profileLink }>
@@ -67,7 +67,7 @@ const UserProfile = props => {
           </ul>
         </div>
       </div>
-      <div>
+      <div className='ui eight column centered row'>
         <p>{ profile.biography }</p>
         <button
           className='ui button'
