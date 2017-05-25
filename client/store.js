@@ -20,9 +20,19 @@ const userProfile = (state = {}, action) => {
   }
 }
 
+const followerList = (state = {}, action) => {
+  switch (action.type) {
+    case 'DISPLAY_LIST':
+      return action.text;
+    default:
+      return state;
+  }
+}
+
 const reducer = combineReducers({
   usernameInput,
-  userProfile
+  userProfile,
+  followerList
 });
 
 const store = createStore(reducer);
