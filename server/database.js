@@ -29,11 +29,11 @@ function Database() {
 // knex('accounts').where('id', 'in', subquery)
 
 Database.prototype.topFollowed = function (userId) {
-  var subquery = knex('relationships').where('following_Id', userId);
+  var subquery = knex('relationships').where('following_Id', userId).select('user_id');
 
   return knex('users')
-    .select('username', 'picture_url', 'follower_count', 'recent_like_count').select('user_id')
-    .whereIn('id', subquery)
+    .select('username', 'picture_url', 'follower_count', 'recent_like_count')
+    .where('id', 'in', subquery)
     .orderBy('follower_count', 'desc')
     .limit(10);
 }

@@ -120,7 +120,7 @@ app.post('/gather', (req, res) => {
           }, (err, data) => {
             database.topFollowed(ids.id)
               .then(top => {
-
+                res.send(top);
               })
             // res.send(ids.id);
           })
