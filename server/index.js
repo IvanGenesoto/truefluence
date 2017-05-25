@@ -100,6 +100,10 @@ app.post('/gather', (req, res) => {
                     .then(result => {
                       console.log(result);
                     })
+                    .catch(err => {
+                      console.error(err);
+                      next();
+                    })
                 }
               })
           })

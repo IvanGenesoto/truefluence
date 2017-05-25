@@ -4,7 +4,7 @@ const path = require('path');
 const cookiePath = path.join(__dirname, '/cookies/eatifyjohn.json');
 const storage = new Client.CookieFileStorage(cookiePath);
 
-const GLOBAL_INTERVAL = 300;
+const GLOBAL_INTERVAL = 1500;
 
 function IG() {
 
