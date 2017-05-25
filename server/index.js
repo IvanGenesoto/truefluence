@@ -46,6 +46,10 @@ app.post('/account', (req, res) => {
     })
 })
 
+app.post('/analyze', (req, res) => {
+  database.getTop
+})
+
 const scrapeSave = username => {
   var thisId;
   return new Promise((resolve, reject) => {
@@ -90,7 +94,7 @@ const scrapeRelateSave = (username, ownerId, callback) => {
 }
 
 app.post('/gather', (req, res) => {
-  res.send('started');
+
   scrapeSave(req.body.username)
     .then(ids => {
       console.log(ids);
@@ -100,7 +104,7 @@ app.post('/gather', (req, res) => {
             database.usernameExists(follower.username)
               .then(result => {
                 if (result || follower.username == 'mostashformommy') {
-                  console.log('not even tryin');
+                  // console.log('not even tryin');
                   next();
                 } else {
                   scrapeRelateSave(follower.username, ids.id, next)
@@ -113,6 +117,12 @@ app.post('/gather', (req, res) => {
                     })
                 }
               })
+          }, (err, data) => {
+            database.topFollowed(ids.id)
+              .then(top => {
+
+              })
+            // res.send(ids.id);
           })
         })
     })

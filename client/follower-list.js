@@ -1,23 +1,49 @@
 const React = require('react');
 const store = require('./store');
+// const Database = require('./../server/database').Database;
+// const database = new Database();
+
+const FollowerItem = props => {
+    return (
+        <tr>
+            <td>
+                <div className="item">
+                    <div className="content">
+                        <span>
+                            <img className="ui avatar image" src='http://scontent.cdninstagram.com/t51.2885-19/12230863_691359027630917_506377473_a.jpg' />
+                            <a className="header">John</a>
+                            <div className="description">Last seen watching <a><b>Bob's Burgers</b></a> 10 hours ago.</div>
+                        </span>
+                    </div>
+                </div>
+            </td>
+            <td>112,435</td>
+            <td>3.52%</td>
+        </tr>
+    )
+}
 
 const FollowerList = props => {
+    // const { followers } = props;
+    if (props.length == 0) return null; 
     return (
         <table className="ui sortable celled table">
             <thead>
                 <tr>
-                <th>Name</th>
-                <th className="sorted descending">Status</th>
-                <th>Notes</th>
+                <th>User</th>
+                <th>Follower Count</th>
+                <th>Like Ratio</th>
                 </tr>
             </thead>
 
             <tbody>
+                { FollowerItem(props) }
                 <tr>
                     <td>John</td>
                     <td>No Action</td>
                     <td>None</td>
-                </tr><tr>
+                </tr>
+                <tr>
                     <td>Jill</td>
                     <td className="negative">Denied</td>
                     <td>None</td>

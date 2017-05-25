@@ -21,10 +21,12 @@ const userProfile = (state = {}, action) => {
   }
 }
 
-const followerList = (state = {}, action) => {
+const followerList = (state = [], action) => {
   switch (action.type) {
     case 'DISPLAY_LIST':
       return action.text;
+    case 'SHOW_FOLLOWERS':
+      return action.followers;
     default:
       return state;
   }

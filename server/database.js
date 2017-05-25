@@ -12,6 +12,34 @@ function Database() {
 
 }
 
+// SELECT ETC
+// FROM users
+// WHERE id IN (SELECT id FROM relationships WHERE following_id = userId)
+// ORDER BY follower_count DESC LIMIT 10
+
+// knex.select('name').from('users')
+// .whereIn('account_id', function() {
+//   this.select('id').from('accounts');
+// })
+// Outputs:
+// select `name` from `users` where `account_id` in (select `id` from `accounts`)
+
+// var subquery = knex('users').where('votes', '>', 100).andWhere('status', 'active').orWhere('name', 'John').select('id');
+
+// knex('accounts').where('id', 'in', subquery)
+
+Database.prototype.topFollowed = function (userId) {
+  var subquery = knex('relationships').where('following_Id', userId);
+
+  return knex('users')
+    .select('username', 'picture_url', 'follower_count', 'recent_like_count').select('user_id')
+    .whereIn('id', subquery)
+    .orderBy('follower_count', 'desc')
+    .limit(10);
+}
+
+// Database.prototype.topFollowersByLikeRatio = 
+
 Database.prototype.clearTable = function (tablename) {
   return knex(tableName).truncate();
 }
