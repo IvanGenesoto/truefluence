@@ -41,72 +41,71 @@ app.post('/account', (req, res) => {
     .then((result) => {
       ig.getAccountById(result._params.id, currentSession.session)
         .then((idResult) => {
-
           res.json(idResult._params);
         })
     })
 })
 
-app.post('/gather', (req, res) => {
-    var counter = 0;
-    const startTime = new Date();
-    Scraper(req.body.username)
+const scrapeSave = username => {
+  var thisId;
+  return new Promise((resolve, reject) => {
+    Scraper(username)
       .then(primary => {
-        // console.log(primary.user);
-        // console.log(primary.medias);
         Metrics(primary.user, primary.medias);
-        ig.getFollowers(primary.user.external_id, currentSession.session)
-          .then(followers => {
-            async.mapSeries(followers, (follower, next) => {
-              Scraper(follower.username)
-                .then(nextUser => {
-                  Metrics(nextUser.user, nextUser.medias);
-                  counter++;
-                  console.log(counter,'out of', followers.length);
-                  // console.log(user.username);
-                  // setTimeout(next, 100);
-                  next();
-                })
-                .catch(err => {
-                  console.error(err);
-                })
-            }, (err, res) => {
-              var endTime = new Date();
-              console.log('elapsed time:', endTime - startTime);
-            })
+        database.upsertUser(primary.user)
+          .then(result => {
+            database.getIdFromExternalId(primary.user.external_id, 'users')
+              .then(id => {
+                async.mapSeries(primary.medias, (media, next) => {
+                  database.upsertMedia(media)
+                    .then(result => {
+                      next();
+                    })
+                });
+                  resolve({ id: id[0].id, external_id: primary.user.external_id });
+              })
           })
       })
-      .catch(err => {
-        console.error(err);
-      })
-  // var userId;
-  // ig.getAccountById(req.body.userId, currentSession.session)
-  //   .then((idResult) => {
-  //     const user = formatUser(idResult._params);
-  //     database.upsertUser(user)
-  //       .then(result => {
-  //         database.getIdFromExternalId(req.body.userId, 'users')
-  //           .then(resulty => {
-  //             console.log('user internal id', resulty[0].id);
-  //             userId = resulty[0].id;
-  //           })
-  //       })
-  //   })
-  //   .then(result => {
-  //     ig.getFollowers(req.body.userId, currentSession.session)
-  //       .then((result) => {
-  //         const followerIds = [];
-  //         async.mapSeries(result, (follower, asyncCallback) => {
-  //           new Promise((resolve, reject) => {
-  //             setTimeout(() => {
-  //               resolve('end');
-  //             }, 3000)
-  //           })
+  });
+}
 
-  //         })
-  //         res.json(followerIds);
-  //       })
-  //   })
+const scrapeRelateSave = (username, ownerId, callback) => {
+  return new Promise((resolve, reject) => {
+    scrapeSave(username)
+      .then(ids => {
+        database.upsertRelationship(ids.id, ownerId)
+          .then(result => {
+            callback();
+            resolve(result);
+          })
+      })
+  })
+}
+
+app.post('/gather', (req, res) => {
+  res.send('started');
+  scrapeSave(req.body.username)
+    .then(ids => {
+      console.log(ids);
+      ig.getFollowers(ids.external_id, currentSession.session)
+        .then(followers => {
+          async.mapSeries(followers, (follower, next) => {
+            database.usernameExists(follower.username)
+              .then(result => {
+                if (result) {
+                  console.log('not even tryin');
+                  next();
+                } else {
+                  scrapeRelateSave(follower.username, ids.id, next)
+                    .then(result => {
+                      console.log(result);
+                    })
+                }
+              })
+          })
+        })
+    })
+
   
 });
 
@@ -220,3 +219,59 @@ app.listen(PORT, () => {
 //     })
 //   })
 // })
+
+    // var counter = 0;
+    // const startTime = new Date();
+    // Scraper(req.body.username)
+    //   .then(primary => {
+    //     Metrics(primary.user, primary.medias);
+    //     // ig.getFollowers(primary.user.external_id, currentSession.session)
+    //     //   .then(followers => {
+    //     //     async.mapSeries(followers, (follower, next) => {
+    //     //       Scraper(follower.username)
+    //     //         .then(nextUser => {
+    //     //           Metrics(nextUser.user, nextUser.medias);
+    //     //           counter++;
+    //     //           console.log(counter,'out of', followers.length);
+    //     //           next();
+    //     //         })
+    //     //         .catch(err => {
+    //     //           console.error(err);
+    //     //         })
+    //     //     }, (err, res) => {
+    //     //       var endTime = new Date();
+    //     //       console.log('elapsed time:', endTime - startTime);
+    //     //     })
+    //     //   })
+    //   })
+    //   .catch(err => {
+    //     console.error(err);
+    //   })
+  // var userId;
+  // ig.getAccountById(req.body.userId, currentSession.session)
+  //   .then((idResult) => {
+  //     const user = formatUser(idResult._params);
+  //     database.upsertUser(user)
+  //       .then(result => {
+  //         database.getIdFromExternalId(req.body.userId, 'users')
+  //           .then(resulty => {
+  //             console.log('user internal id', resulty[0].id);
+  //             userId = resulty[0].id;
+  //           })
+  //       })
+  //   })
+  //   .then(result => {
+  //     ig.getFollowers(req.body.userId, currentSession.session)
+  //       .then((result) => {
+  //         const followerIds = [];
+  //         async.mapSeries(result, (follower, asyncCallback) => {
+  //           new Promise((resolve, reject) => {
+  //             setTimeout(() => {
+  //               resolve('end');
+  //             }, 3000)
+  //           })
+
+  //         })
+  //         res.json(followerIds);
+  //       })
+  //   })

@@ -51,11 +51,11 @@ const UserProfile = props => {
     })
   }
   return (
-    <div>
+    <div className='ten column centered row'>
       <div>
         <div>
           <a href={ profileLink }>
-            <img className='ui small image' src={ profile.picture } />
+            <img className='ui small image centered column' src={ profile.picture } />
           </a>
         </div>
         <div>
