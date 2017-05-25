@@ -4,6 +4,7 @@ const store = require('./store');
 const UsernameInput = require('./input-username');
 const UserProfile = require('./user-profile');
 const PostDetails = require('./post-details');
+const FollowerList = require('./follower-list.js');
 
 const render = () => {
   const state = store.getState();
@@ -11,6 +12,7 @@ const render = () => {
     <div className='ui grid'>
       <UsernameInput text={ state.usernameInput } />
       <UserProfile { ...state.userProfile }></UserProfile>
+      <FollowerList { ...state }></FollowerList>
     </div>,
     document.querySelector('#container')
   )
