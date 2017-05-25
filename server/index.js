@@ -66,6 +66,9 @@ const scrapeSave = username => {
               })
           })
       })
+      .catch(err => {
+        reject(err);
+      })
   });
 }
 
@@ -78,6 +81,10 @@ const scrapeRelateSave = (username, ownerId, callback) => {
             callback();
             resolve(result);
           })
+      })
+      .catch(err => {
+        callback();
+        reject(err);
       })
   })
 }
