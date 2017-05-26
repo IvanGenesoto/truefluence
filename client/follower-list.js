@@ -1,7 +1,5 @@
 const React = require('react');
 const store = require('./store');
-// const Database = require('./../server/database').Database;
-// const database = new Database();
 
 const FollowerItem = user => {
     return (

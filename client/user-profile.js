@@ -40,23 +40,14 @@ const UserProfile = props => {
         console.log('like ratio:', likes/profile.followerCount);
       })
   }
-  const handleGather = event => {
-    console.log('handle gather');
-    fetch('/gather', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ username: profile.username })
-    })
-    .then((result) => result.json())
-    .then((user) => {
-      console.log(user);
-    })
-  }
 
   const handleAnalyze = event => {
     console.log('handle analyze');
     store.dispatch({
       type: 'HIDE_LIST'
+    });
+    store.dispatch({
+      type: 'SHOW_LOADER'
     });
     fetch('/gather', {
       method: 'POST',
@@ -65,6 +56,9 @@ const UserProfile = props => {
     })
       .then(result => result.json())
       .then(followers => {
+        store.dispatch({
+          type: 'HIDE_LOADER'
+        });
         store.dispatch({
           type: 'SHOW_FOLLOWERS',
           followers: followers

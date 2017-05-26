@@ -12,6 +12,17 @@ const usernameInput = (state = '', action) => {
   }
 }
 
+const loader = (state = false, action) => {
+  switch (action.type) {
+    case 'SHOW_LOADER':
+      return true;
+    case 'HIDE_LOADER':
+      return false;
+    default:
+      return state;
+  }
+}
+
 const userProfile = (state = {}, action) => {
   switch (action.type) {
     case 'SAVE_PROFILE':
@@ -38,7 +49,8 @@ const followerList = (state = [], action) => {
 const reducer = combineReducers({
   usernameInput,
   userProfile,
-  followerList
+  followerList,
+  loader
 });
 
 const store = createStore(reducer);
