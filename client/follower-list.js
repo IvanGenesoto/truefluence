@@ -36,7 +36,7 @@ const FollowerList = props => {
             </thead>
 
             <tbody>
-                { FollowerItem(props[0]) }
+                { FollowerItem(props) }
                 <tr>
                     <td>John</td>
                     <td>No Action</td>
