@@ -25,7 +25,8 @@ const FollowerItem = user => {
 
 const FollowerList = props => {
     // const { followers } = props;
-    if (props.length == 0) return null; 
+    console.log('props:', props);
+    // if (props.length == 0) return null; 
     return (
         <table className="ui sortable celled table">
             <thead>

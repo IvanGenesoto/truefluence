@@ -8,11 +8,12 @@ const FollowerList = require('./follower-list.js');
 
 const render = () => {
   const state = store.getState();
+  console.log('followerList:', state.followerList);
   ReactDOM.render(
     <div className='ui grid'>
       <UsernameInput text={ state.usernameInput } />
       <UserProfile { ...state.userProfile }></UserProfile>
-      <FollowerList { ...state.followerList }></FollowerList>
+      <FollowerList users={ state.followerList }></FollowerList>
     </div>,
     document.querySelector('#container')
   )
