@@ -62,6 +62,10 @@ const UserProfile = props => {
     })
       .then(result => {
         console.log(result);
+        store.dispatch({
+          type: 'SHOW_FOLLOWERS',
+          followers: result
+        })
         // database.topFollowed(result)
       })
   }

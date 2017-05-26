@@ -3,22 +3,22 @@ const store = require('./store');
 // const Database = require('./../server/database').Database;
 // const database = new Database();
 
-const FollowerItem = props => {
+const FollowerItem = user => {
     return (
         <tr>
             <td>
                 <div className="item">
                     <div className="content">
                         <span>
-                            <img className="ui avatar image" src='http://scontent.cdninstagram.com/t51.2885-19/12230863_691359027630917_506377473_a.jpg' />
-                            <a className="header">John</a>
+                            <img className="ui avatar image" src={ user.picture_url } />
+                            <a className="header">{ user.username }</a>
                             <div className="description">Last seen watching <a><b>Bob's Burgers</b></a> 10 hours ago.</div>
                         </span>
                     </div>
                 </div>
             </td>
-            <td>112,435</td>
-            <td>3.52%</td>
+            <td>{ user.follower_count }</td>
+
         </tr>
     )
 }
@@ -32,12 +32,11 @@ const FollowerList = props => {
                 <tr>
                 <th>User</th>
                 <th>Follower Count</th>
-                <th>Like Ratio</th>
                 </tr>
             </thead>
 
             <tbody>
-                { FollowerItem(props) }
+                { FollowerItem(props[0]) }
                 <tr>
                     <td>John</td>
                     <td>No Action</td>
