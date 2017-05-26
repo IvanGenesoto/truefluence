@@ -23,6 +23,8 @@ const userProfile = (state = {}, action) => {
 
 const followerList = (state = [], action) => {
   switch (action.type) {
+    case 'HIDE_LIST':
+      return {};
     case 'DISPLAY_LIST':
       return action.text;
     case 'SHOW_FOLLOWERS':

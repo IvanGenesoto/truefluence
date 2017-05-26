@@ -55,6 +55,9 @@ const UserProfile = props => {
 
   const handleAnalyze = event => {
     console.log('handle analyze');
+    store.dispatch({
+      type: 'HIDE_LIST'
+    });
     fetch('/gather', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },

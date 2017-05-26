@@ -9,11 +9,11 @@ const FollowerItem = user => {
             <td>
                 <div className="item">
                     <div className="content">
-                        <span>
+                        <a href={ 'https://www.instagram.com/' + user.username }>
                             <img className="ui avatar image" src={ user.picture_url } />
                             <a className="header">{ user.username }</a>
                             <div className="description">Last seen watching <a><b>Bob's Burgers</b></a> 10 hours ago.</div>
-                        </span>
+                        </a>
                     </div>
                 </div>
             </td>
