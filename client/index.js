@@ -13,7 +13,7 @@ const render = () => {
     <div className='ui grid'>
       <UsernameInput text={ state.usernameInput } />
       <UserProfile { ...state.userProfile }></UserProfile>
-      <FollowerList users={ state.followerList }></FollowerList>
+      <FollowerList { ...state.followerList }></FollowerList>
     </div>,
     document.querySelector('#container')
   )
