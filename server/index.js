@@ -46,6 +46,10 @@ app.post('/account', (req, res) => {
     })
 })
 
+app.post('/analyze', (req, res) => {
+  database.getTop
+})
+
 const scrapeSave = username => {
   var thisId;
   return new Promise((resolve, reject) => {
@@ -66,6 +70,9 @@ const scrapeSave = username => {
               })
           })
       })
+      .catch(err => {
+        reject(err);
+      })
   });
 }
 
@@ -79,11 +86,15 @@ const scrapeRelateSave = (username, ownerId, callback) => {
             resolve(result);
           })
       })
+      .catch(err => {
+        callback();
+        reject(err);
+      })
   })
 }
 
 app.post('/gather', (req, res) => {
-  res.send('started');
+
   scrapeSave(req.body.username)
     .then(ids => {
       console.log(ids);
@@ -92,8 +103,8 @@ app.post('/gather', (req, res) => {
           async.mapSeries(followers, (follower, next) => {
             database.usernameExists(follower.username)
               .then(result => {
-                if (result) {
-                  console.log('not even tryin');
+                if (result || follower.username == 'mostashformommy') {
+                  // console.log('not even tryin');
                   next();
                 } else {
                   scrapeRelateSave(follower.username, ids.id, next)
@@ -106,6 +117,12 @@ app.post('/gather', (req, res) => {
                     })
                 }
               })
+          }, (err, data) => {
+            database.topFollowed(ids.id)
+              .then(top => {
+                res.send(top);
+              })
+            // res.send(ids.id);
           })
         })
     })

@@ -14,6 +14,10 @@ function Scraper(username) {
                 dataQueue += d;
             });
 
+            res.on('uncaughtException', function (err) {
+                reject(err);
+            });
+
             res.on('end', () => {
                 var dataJSON = JSON.parse(dataQueue);
                 const { user, medias } = ParseScrape(dataJSON);

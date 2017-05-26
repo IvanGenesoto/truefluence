@@ -17,6 +17,9 @@ const UsernameInput = props => {
   const handleSubmit = event => {
     event.preventDefault();
     const username = store.getState().usernameInput;
+    store.dispatch({
+      type: 'HIDE_LIST'
+    });
     fetch('/account', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },

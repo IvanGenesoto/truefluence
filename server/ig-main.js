@@ -4,7 +4,7 @@ const path = require('path');
 const cookiePath = path.join(__dirname, '/cookies/eatifyjohn.json');
 const storage = new Client.CookieFileStorage(cookiePath);
 
-const GLOBAL_INTERVAL = 1500;
+const GLOBAL_INTERVAL = 500;
 
 function IG() {
 
@@ -74,23 +74,23 @@ IG.prototype.getFollowers = function(userId, session) {
     let feed = new Client.Feed.AccountFollowers(session, userId, 1000);
     function retrieve() {
       feed.get()
-      .then((result) => {
-        counter++;
-        result.map(user => { followers.push(user._params); });
-        if (feed.isMoreAvailable()) {
-          console.log('yes, more available');
-          console.log(followers.length);
-          console.log(counter);
-          setTimeout(() => {
-            retrieve();
-          }, GLOBAL_INTERVAL);
-        } else {
-          const endTime = new Date();
-          console.log('rate for this action (actions/minute):', counter/((endTime - startTime)/60000));
+        .then((result) => {
+          // counter++;
+          result.map(user => { followers.push(user._params); });
+          // if (feed.isMoreAvailable()) {
+          //   console.log('yes, more available');
+          //   console.log(followers.length);
+          //   console.log(counter);
+          //   setTimeout(() => {
+          //     retrieve();
+          //   }, GLOBAL_INTERVAL);
+          // } else {
+          //   const endTime = new Date();
+          //   console.log('rate for this action (actions/minute):', counter/((endTime - startTime)/60000));
+          //   resolve(followers);
+          // }
           resolve(followers);
-        }
-        // resolve(followers);
-      })
+        })
     }
     retrieve();
   })

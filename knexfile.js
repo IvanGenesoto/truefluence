@@ -2,6 +2,7 @@ exports.development = {
   client: 'postgresql',
   connection: {
     user: 'johny',
+    password: 'peanut',
     database: 'truefluence'
   },
   migrations: {

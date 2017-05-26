@@ -4,13 +4,18 @@ const store = require('./store');
 const UsernameInput = require('./input-username');
 const UserProfile = require('./user-profile');
 const PostDetails = require('./post-details');
+const FollowerList = require('./follower-list.js');
+const Loader = require('./loader');
 
 const render = () => {
   const state = store.getState();
+  console.log('loader', state.loader);
   ReactDOM.render(
     <div className='ui grid'>
       <UsernameInput text={ state.usernameInput } />
       <UserProfile { ...state.userProfile }></UserProfile>
+      <Loader open={ state.loader } />
+      <FollowerList { ...state.followerList }></FollowerList>
     </div>,
     document.querySelector('#container')
   )

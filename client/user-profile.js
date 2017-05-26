@@ -1,5 +1,7 @@
 const React = require('react');
 const store = require('./store');
+// const Database = require('./../server/database').Database;
+// const database = new Database();
 
 const UserProfile = props => {
   const profile = store.getState().userProfile;
@@ -38,20 +40,34 @@ const UserProfile = props => {
         console.log('like ratio:', likes/profile.followerCount);
       })
   }
-  const handleGather = event => {
-    console.log('handle gather');
+
+  const handleAnalyze = event => {
+    console.log('handle analyze');
+    store.dispatch({
+      type: 'HIDE_LIST'
+    });
+    store.dispatch({
+      type: 'SHOW_LOADER'
+    });
     fetch('/gather', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ username: profile.username })
     })
-    .then((result) => result.json())
-    .then((user) => {
-      console.log(user);
-    })
+      .then(result => result.json())
+      .then(followers => {
+        store.dispatch({
+          type: 'HIDE_LOADER'
+        });
+        store.dispatch({
+          type: 'SHOW_FOLLOWERS',
+          followers: followers
+        })
+        // database.topFollowed(result)
+      })
   }
   return (
-    <div className='ui ten column centered row'>
+    <div className='ui eight column centered row'>
       <div>
         <div>
           <a href={ profileLink }>
@@ -67,17 +83,11 @@ const UserProfile = props => {
           </ul>
         </div>
       </div>
-      <div className='ui eight column centered row'>
+      <div className='ui four column centered row'>
         <p>{ profile.biography }</p>
         <button
           className='ui button'
-          onClick={ handleGetFollowers }>Get List of Followers</button>
-        <button
-          className='ui button'
-          onClick={ handleMedia }>Get Post Details</button>
-        <button
-          className='ui button'
-          onClick={ handleGather }>Gather User</button>
+          onClick={ handleAnalyze }>Analyze Followers</button>
       </div>
     </div>
   );
