@@ -29,7 +29,7 @@ function Database() {
 // knex('accounts').where('id', 'in', subquery)
 
 Database.prototype.topFollowed = function (userId) {
-  var subquery = knex('relationships').where('following_Id', userId).select('user_id');
+  var subquery = knex('relationships').where('following_id', userId).select('user_id');
 
   return knex('users')
     .select('username', 'picture_url', 'follower_count', 'recent_like_count')

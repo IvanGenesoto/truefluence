@@ -60,11 +60,12 @@ const UserProfile = props => {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ username: profile.username })
     })
-      .then(result => {
-        console.log(result);
+      .then(result => result.json())
+      .then(followers => {
+        console.log(followers);
         store.dispatch({
           type: 'SHOW_FOLLOWERS',
-          followers: result
+          followers: followers
         })
         // database.topFollowed(result)
       })
@@ -90,7 +91,7 @@ const UserProfile = props => {
         <p>{ profile.biography }</p>
         <button
           className='ui button'
-          onClick={ handleGather }>Analyze Followers</button>
+          onClick={ handleAnalyze }>Analyze Followers</button>
       </div>
     </div>
   );
