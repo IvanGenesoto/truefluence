@@ -62,7 +62,6 @@ const UserProfile = props => {
     })
       .then(result => result.json())
       .then(followers => {
-        console.log(followers);
         store.dispatch({
           type: 'SHOW_FOLLOWERS',
           followers: followers
