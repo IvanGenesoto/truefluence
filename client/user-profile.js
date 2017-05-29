@@ -2,6 +2,7 @@ const React = require('react');
 const store = require('./store');
 // const Database = require('./../server/database').Database;
 // const database = new Database();
+const async = require('async');
 
 const UserProfile = props => {
   const profile = store.getState().userProfile;
@@ -40,6 +41,29 @@ const UserProfile = props => {
       })
   }
 
+const addMediasStats = followers => {
+  return new Promise((resolve, reject) => {
+    async.mapSeries(followers, (follower, next) => {
+      console.log('follower', follower.external_id);
+      fetch('/media-stats', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ userId: follower.external_id })
+      })
+          .then(result => result.json())
+          .then(medias => {
+              console.log('medias', medias);
+              follower.private = medias.private;
+              follower.avLikes = medias.avLikes;
+              follower.avComments = medias.avComments;
+              next();
+          })
+    }, (err, details) => {
+      resolve(followers);
+    })
+  })
+}
+
   const handleAnalyze = event => {
     console.log('handle analyze');
     store.dispatch({
@@ -55,13 +79,17 @@ const UserProfile = props => {
     })
       .then(result => result.json())
       .then(followers => {
-        store.dispatch({
-          type: 'HIDE_LOADER'
-        });
-        store.dispatch({
-          type: 'SHOW_FOLLOWERS',
-          followers: followers
-        })
+        addMediasStats(followers)
+          .then(statsFollowers => {
+            store.dispatch({
+              type: 'HIDE_LOADER'
+            });
+            store.dispatch({
+              type: 'SHOW_FOLLOWERS',
+              followers: statsFollowers
+            })
+
+          })
         // database.topFollowed(result)
       })
   }

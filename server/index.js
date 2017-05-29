@@ -175,15 +175,17 @@ app.post('/medias', (req, res) => {
 
 app.post('/media-stats', (req, res) => {
     database.getMedias(req.body.userId)
-    .then(medias => {
-      if (medias.length == 0) {
-        res.json({ private: true, avLikes: 0, avComments: 0 })
-      } else {
-        const likes = medias.map(media => { return media.likeCount; }).reduce((tot, val) => { return tot + val; }, 0);
-        const comments = medias.map(media => { return media.commentCount; }).reduce((tot, val) => { return tot + val; }, 0);
-        res.json({ private: false, avLikes: likes / medias.length, avComments: comments / medias.length });
-      }
-    })
+      .then(medias => {
+        console.log('media stats media', medias);
+        if (medias.length == 0) {
+          res.json({ private: true, avLikes: 0, avComments: 0 })
+        } else {
+          console.log('media stats', medias);
+          const likes = medias.map(media => { return media.like_count; }).reduce((tot, val) => { return tot + val; }, 0);
+          const comments = medias.map(media => { return media.comment_count; }).reduce((tot, val) => { return tot + val; }, 0);
+          res.json({ private: false, avLikes: likes / medias.length, avComments: comments / medias.length });
+        }
+      })
 })
 
 app.get('/csv', (req, res) => {

@@ -17,7 +17,8 @@ const FollowerItem = user => {
             </td>
             <td>{ user.follower_count }</td>
             <td>{ user.post_count }</td>
-
+            <td>{ user.private ? 'Private' : user.avLikes.toFixed(2) }</td>
+            <td>{ user.private ? 'Private' : user.avComments.toFixed(2) }</td>
         </tr>
     )
 }
@@ -57,22 +58,7 @@ const FollowerItem = user => {
                     // <td>{ medias.length == '0' ? 'Private' : (comments / medias.length).toFixed(2) }</td>
 
 const FollowerList = props => {
-    console.log('props', props);
-
-    if (!props.hasOwnProperty(0)) return null;
-    async.mapSeries(props.followers, (follower, next) => {
-        fetch('/media-stats', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ userId: follower.external_id })
-        })
-            .then(result => result.json())
-            .then(medias => {
-                console.log(medias);
-                next();
-            })
-    })
-    console.log(props);
+    if (!props.followers) return null;
     return (
         <table className="ui sortable celled table">
             <thead>
@@ -86,16 +72,16 @@ const FollowerList = props => {
             </thead>
 
             <tbody>
-                { FollowerItem(props[0]) }
-                { FollowerItem(props[1]) }
-                { FollowerItem(props[2]) }
-                { FollowerItem(props[3]) }
-                { FollowerItem(props[4]) }
-                { FollowerItem(props[5]) }
-                { FollowerItem(props[6]) }
-                { FollowerItem(props[7]) }
-                { FollowerItem(props[8]) }
-                { FollowerItem(props[9]) }
+                { FollowerItem(props.followers[0]) }
+                { FollowerItem(props.followers[1]) }
+                { FollowerItem(props.followers[2]) }
+                { FollowerItem(props.followers[3]) }
+                { FollowerItem(props.followers[4]) }
+                { FollowerItem(props.followers[5]) }
+                { FollowerItem(props.followers[6]) }
+                { FollowerItem(props.followers[7]) }
+                { FollowerItem(props.followers[8]) }
+                { FollowerItem(props.followers[9]) }
             </tbody>
             <tfoot>
                 <tr>
@@ -106,6 +92,7 @@ const FollowerList = props => {
             </tfoot>
         </table>
     )
+
 }
 
 module.exports = FollowerList;
