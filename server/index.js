@@ -97,19 +97,16 @@ app.post('/gather', (req, res) => {
 
   scrapeSave(req.body.username)
     .then(ids => {
-      console.log(ids);
       ig.getFollowers(ids.external_id, currentSession.session)
         .then(followers => {
           async.mapSeries(followers, (follower, next) => {
             database.usernameExists(follower.username)
               .then(result => {
-                if (result || follower.username == 'mostashformommy') {
-                  // console.log('not even tryin');
+                if (result || follower.username == 'mostashformommy') { //formerly had result ||
                   next();
                 } else {
                   scrapeRelateSave(follower.username, ids.id, next)
                     .then(result => {
-                      console.log(result);
                     })
                     .catch(err => {
                       console.error(err);
@@ -162,13 +159,26 @@ function buildProfileList(userNames) {
     }
   })
   cb(0)
-  console.log(profiles);
 }
 
-app.post('/media', (req, res) => {
-    ig.getPosts(req.body.userId, currentSession.session)
+app.post('/medias', (req, res) => {
+    database.getMedias(req.body.userId)
       .then(result => {
         res.json(result);
+      })
+
+})
+
+app.post('/media-stats', (req, res) => {
+    database.getMedias(req.body.userId)
+      .then(medias => {
+        if (medias.length == 0) {
+          res.json({ private: true, avLikes: 0, avComments: 0 })
+        } else {
+          const likes = medias.map(media => { return media.like_count; }).reduce((tot, val) => { return tot + val; }, 0);
+          const comments = medias.map(media => { return media.comment_count; }).reduce((tot, val) => { return tot + val; }, 0);
+          res.json({ private: false, avLikes: likes / medias.length, avComments: comments / medias.length });
+        }
       })
 })
 
@@ -218,81 +228,3 @@ const PORT = 5760;
 app.listen(PORT, () => {
   console.log('listening on port: ', PORT);
 })
-
-// defunct gather code. use for relationship logging later.
-
-// .then(prod => {
-//   ig.getAccountById(follower.id, currentSession.session)
-//   .then(idResult => {
-//     const user = formatUser(idResult._params);
-//     database.upsertUser(user)
-//     .then(result => {
-//       console.log('follower added');
-//       database.getIdFromExternalId(follower.id, 'users')
-//       .then(result => {
-//         database.upsertRelationship(result[0].id, userId)
-//           .then(result => {
-//             console.log(follower);
-//             console.log(prod);
-//             asyncCallback();
-//           })
-//       })
-//     })
-//   })
-// })
-
-    // var counter = 0;
-    // const startTime = new Date();
-    // Scraper(req.body.username)
-    //   .then(primary => {
-    //     Metrics(primary.user, primary.medias);
-    //     // ig.getFollowers(primary.user.external_id, currentSession.session)
-    //     //   .then(followers => {
-    //     //     async.mapSeries(followers, (follower, next) => {
-    //     //       Scraper(follower.username)
-    //     //         .then(nextUser => {
-    //     //           Metrics(nextUser.user, nextUser.medias);
-    //     //           counter++;
-    //     //           console.log(counter,'out of', followers.length);
-    //     //           next();
-    //     //         })
-    //     //         .catch(err => {
-    //     //           console.error(err);
-    //     //         })
-    //     //     }, (err, res) => {
-    //     //       var endTime = new Date();
-    //     //       console.log('elapsed time:', endTime - startTime);
-    //     //     })
-    //     //   })
-    //   })
-    //   .catch(err => {
-    //     console.error(err);
-    //   })
-  // var userId;
-  // ig.getAccountById(req.body.userId, currentSession.session)
-  //   .then((idResult) => {
-  //     const user = formatUser(idResult._params);
-  //     database.upsertUser(user)
-  //       .then(result => {
-  //         database.getIdFromExternalId(req.body.userId, 'users')
-  //           .then(resulty => {
-  //             console.log('user internal id', resulty[0].id);
-  //             userId = resulty[0].id;
-  //           })
-  //       })
-  //   })
-  //   .then(result => {
-  //     ig.getFollowers(req.body.userId, currentSession.session)
-  //       .then((result) => {
-  //         const followerIds = [];
-  //         async.mapSeries(result, (follower, asyncCallback) => {
-  //           new Promise((resolve, reject) => {
-  //             setTimeout(() => {
-  //               resolve('end');
-  //             }, 3000)
-  //           })
-
-  //         })
-  //         res.json(followerIds);
-  //       })
-  //   })

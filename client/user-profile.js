@@ -2,10 +2,31 @@ const React = require('react');
 const store = require('./store');
 // const Database = require('./../server/database').Database;
 // const database = new Database();
+const async = require('async');
+
+const addMediasStats = followers => {
+  return new Promise((resolve, reject) => {
+    async.mapSeries(followers, (follower, next) => {
+      fetch('/media-stats', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ userId: follower.external_id })
+      })
+          .then(result => result.json())
+          .then(medias => {
+              follower.private = medias.private;
+              follower.avLikes = medias.avLikes;
+              follower.avComments = medias.avComments;
+              next();
+          })
+    }, (err, details) => {
+      resolve(followers);
+    })
+  })
+}
 
 const UserProfile = props => {
   const profile = store.getState().userProfile;
-  console.log(profile.length);
   if (typeof profile.id == 'undefined') return null;
   const profileLink = 'http://www.instagram.com/' + profile.username;
   const handleGetFollowers = event => {
@@ -32,12 +53,6 @@ const UserProfile = props => {
       .then((posts) => {
         const likes = posts.map((post) => { return post.likeCount; }).reduce((tot, val) => { return tot + val; });
         const comments = posts.map((post) => { return post.commentCount; }).reduce((tot, val) => { return tot + val; });
-        console.log('number of posts:', posts.length);
-        console.log('number of likes:', likes);
-        console.log('likes per post:', likes/posts.length);
-        console.log('number of comments:', comments);
-        console.log('comments per post:', comments/posts.length);
-        console.log('like ratio:', likes/profile.followerCount);
       })
   }
 
@@ -56,13 +71,17 @@ const UserProfile = props => {
     })
       .then(result => result.json())
       .then(followers => {
-        store.dispatch({
-          type: 'HIDE_LOADER'
-        });
-        store.dispatch({
-          type: 'SHOW_FOLLOWERS',
-          followers: followers
-        })
+        addMediasStats(followers)
+          .then(statsFollowers => {
+            store.dispatch({
+              type: 'HIDE_LOADER'
+            });
+            store.dispatch({
+              type: 'SHOW_FOLLOWERS',
+              followers: statsFollowers
+            })
+
+          })
         // database.topFollowed(result)
       })
   }

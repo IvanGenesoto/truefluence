@@ -1,6 +1,6 @@
 const React = require('react');
 const store = require('./store');
-
+const async = require('async');
 const FollowerItem = user => {
     return (
         <tr>
@@ -16,35 +16,38 @@ const FollowerItem = user => {
                 </div>
             </td>
             <td>{ user.follower_count }</td>
-
+            <td>{ user.post_count }</td>
+            <td>{ user.private ? 'Private' : user.avLikes.toFixed(2) }</td>
+            <td>{ user.private ? 'Private' : user.avComments.toFixed(2) }</td>
         </tr>
     )
 }
 
 const FollowerList = props => {
-    // const { followers } = props;
-    console.log('props:', props);
-    if (!props.hasOwnProperty(0)) return null; 
+    if (!props.followers) return null;
     return (
         <table className="ui sortable celled table">
             <thead>
                 <tr>
                 <th>User</th>
                 <th>Follower Count</th>
+                <th>Post Count</th>
+                <th>Average Likes/Post</th>
+                <th>Average Comments/Post</th>
                 </tr>
             </thead>
 
             <tbody>
-                { FollowerItem(props[0]) }
-                { FollowerItem(props[1]) }
-                { FollowerItem(props[2]) }
-                { FollowerItem(props[3]) }
-                { FollowerItem(props[4]) }
-                { FollowerItem(props[5]) }
-                { FollowerItem(props[6]) }
-                { FollowerItem(props[7]) }
-                { FollowerItem(props[8]) }
-                { FollowerItem(props[9]) }
+                { FollowerItem(props.followers[0]) }
+                { FollowerItem(props.followers[1]) }
+                { FollowerItem(props.followers[2]) }
+                { FollowerItem(props.followers[3]) }
+                { FollowerItem(props.followers[4]) }
+                { FollowerItem(props.followers[5]) }
+                { FollowerItem(props.followers[6]) }
+                { FollowerItem(props.followers[7]) }
+                { FollowerItem(props.followers[8]) }
+                { FollowerItem(props.followers[9]) }
             </tbody>
             <tfoot>
                 <tr>
@@ -55,6 +58,7 @@ const FollowerList = props => {
             </tfoot>
         </table>
     )
+
 }
 
 module.exports = FollowerList;

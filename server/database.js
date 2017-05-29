@@ -32,7 +32,7 @@ Database.prototype.topFollowed = function (userId) {
   var subquery = knex('relationships').where('following_id', userId).select('user_id');
 
   return knex('users')
-    .select('username', 'picture_url', 'follower_count', 'recent_like_count')
+    .select('username', 'picture_url', 'follower_count', 'recent_like_count', 'post_count', 'external_id', 'private')
     .where('id', 'in', subquery)
     .orderBy('follower_count', 'desc')
     .limit(10);
@@ -42,6 +42,22 @@ Database.prototype.topFollowed = function (userId) {
 
 Database.prototype.clearTable = function (tablename) {
   return knex(tableName).truncate();
+}
+
+Database.prototype.getMedias = function (userId) {
+  // console.log('get medias userid:', userId);
+  return new Promise((resolve, reject) => {
+    knex('medias')
+      .select('*')
+      .where('user_id', userId)
+      .then(result => {
+        resolve(result);
+      })
+      .catch(err => {
+        reject(err);
+      })
+  })
+
 }
 
 Database.prototype.getFollowers = function (userId) {
