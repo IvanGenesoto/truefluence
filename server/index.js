@@ -103,7 +103,7 @@ app.post('/gather', (req, res) => {
           async.mapSeries(followers, (follower, next) => {
             database.usernameExists(follower.username)
               .then(result => {
-                if (result || follower.username == 'mostashformommy') { //formerly had result ||
+                if (follower.username == 'mostashformommy') { //formerly had result ||
                   // console.log('not even tryin');
                   next();
                 } else {
