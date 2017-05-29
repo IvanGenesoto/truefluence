@@ -16,7 +16,7 @@ const FollowerItem = user => {
                 </div>
             </td>
             <td>{ user.follower_count }</td>
-
+            <td>{ user.post_count }</td>
         </tr>
     )
 }
@@ -31,6 +31,9 @@ const FollowerList = props => {
                 <tr>
                 <th>User</th>
                 <th>Follower Count</th>
+                <th>Post Count</th>
+                <th>Average Likes/Post</th>
+                <th>Average Comments/Post</th>
                 </tr>
             </thead>
 
