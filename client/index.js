@@ -9,7 +9,6 @@ const Loader = require('./loader');
 
 const render = () => {
   const state = store.getState();
-  console.log('loader', state.loader);
   ReactDOM.render(
     <div className='ui grid'>
       <UsernameInput text={ state.usernameInput } />

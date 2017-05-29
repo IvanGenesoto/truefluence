@@ -4,6 +4,27 @@ const store = require('./store');
 // const database = new Database();
 const async = require('async');
 
+const addMediasStats = followers => {
+  return new Promise((resolve, reject) => {
+    async.mapSeries(followers, (follower, next) => {
+      fetch('/media-stats', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ userId: follower.external_id })
+      })
+          .then(result => result.json())
+          .then(medias => {
+              follower.private = medias.private;
+              follower.avLikes = medias.avLikes;
+              follower.avComments = medias.avComments;
+              next();
+          })
+    }, (err, details) => {
+      resolve(followers);
+    })
+  })
+}
+
 const UserProfile = props => {
   const profile = store.getState().userProfile;
   if (typeof profile.id == 'undefined') return null;
@@ -32,37 +53,8 @@ const UserProfile = props => {
       .then((posts) => {
         const likes = posts.map((post) => { return post.likeCount; }).reduce((tot, val) => { return tot + val; });
         const comments = posts.map((post) => { return post.commentCount; }).reduce((tot, val) => { return tot + val; });
-        console.log('number of posts:', posts.length);
-        console.log('number of likes:', likes);
-        console.log('likes per post:', likes/posts.length);
-        console.log('number of comments:', comments);
-        console.log('comments per post:', comments/posts.length);
-        console.log('like ratio:', likes/profile.followerCount);
       })
   }
-
-const addMediasStats = followers => {
-  return new Promise((resolve, reject) => {
-    async.mapSeries(followers, (follower, next) => {
-      console.log('follower', follower.external_id);
-      fetch('/media-stats', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ userId: follower.external_id })
-      })
-          .then(result => result.json())
-          .then(medias => {
-              console.log('medias', medias);
-              follower.private = medias.private;
-              follower.avLikes = medias.avLikes;
-              follower.avComments = medias.avComments;
-              next();
-          })
-    }, (err, details) => {
-      resolve(followers);
-    })
-  })
-}
 
   const handleAnalyze = event => {
     console.log('handle analyze');
