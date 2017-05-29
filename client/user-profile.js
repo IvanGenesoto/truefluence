@@ -5,7 +5,6 @@ const store = require('./store');
 
 const UserProfile = props => {
   const profile = store.getState().userProfile;
-  console.log(profile.length);
   if (typeof profile.id == 'undefined') return null;
   const profileLink = 'http://www.instagram.com/' + profile.username;
   const handleGetFollowers = event => {

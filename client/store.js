@@ -39,8 +39,7 @@ const followerList = (state = [], action) => {
     case 'DISPLAY_LIST':
       return action.text;
     case 'SHOW_FOLLOWERS':
-      console.log('action:', action);
-      return action.followers;
+      return { followers: action.followers };
     default:
       return state;
   }
