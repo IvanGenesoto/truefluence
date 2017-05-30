@@ -10,6 +10,7 @@ const Loader = require('./loader');
 const render = () => {
   const state = store.getState();
   ReactDOM.render(
+    
     <div className='ui grid'>
       <UsernameInput text={ state.usernameInput } />
       <UserProfile { ...state.userProfile }></UserProfile>

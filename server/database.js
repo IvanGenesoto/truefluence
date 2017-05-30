@@ -38,7 +38,6 @@ Database.prototype.topFollowed = function (userId) {
     .limit(10);
 }
 
-// Database.prototype.topFollowersByLikeRatio = 
 
 Database.prototype.clearTable = function (tablename) {
   return knex(tableName).truncate();
@@ -231,6 +230,21 @@ Database.prototype.updateMedia = function (media) {
     .update(media);
 }
 
-
+Database.prototype.insertObjects = function (tableName, arrObjData) {
+  return knex.transaction((trx) => {
+    return knex.batchInsert(tableName, arrObjData)
+      .transacting(trx)
+      .then(trx.commit)
+      .catch(trx.rollback);
+  })
+    .then(() => {
+      console.log('transaction successful')
+      return 'transaction successful';
+    })
+    .catch(() => {
+      console.log('transaction failed');
+      return 'transaction failed';
+    });
+}
 
 exports.Database = Database;

@@ -45,6 +45,32 @@ const followerList = (state = [], action) => {
   }
 }
 
+const botStatus = (state {}, action) => {
+  switch (action.type) {
+    case 'EGON_READY':
+      return;
+    case 'RAY_READY':
+      return;
+    case 'PETER_READY':
+      return;
+    case 'WINSTON_READY':
+      return;
+    case 'JANINE_READY':
+      return;
+    default:
+      return state;
+  }
+}
+
+const progress = (state = {}, action) => {
+  switch (action.type) {
+    case 'CHECK_PROGRESS':
+      return {};
+    default:
+      return state;
+  }
+}
+
 const reducer = combineReducers({
   usernameInput,
   userProfile,

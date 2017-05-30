@@ -127,22 +127,11 @@ app.post('/gather', (req, res) => {
   
 });
 
-const asyncCallback = () => {
-  console.log('called back');
-}
-const tempCSV = [
-  'eatify',
-  '123chocula',
-  'southerncoffeelover',
-  'eatifyjohn',
-  'miomiura'
-]
-
 function buildProfileList(userNames) {
   console.log('starting up');
   const profiles = []
   return new Promise((resolve, reject) => {
-    function cb(position) {
+    function build(position) {
       console.log('looking up ' + userNames[position]);
       ig.getAccountByName(req.body.username, currentSession.session)
         .then((result) => {
@@ -150,7 +139,7 @@ function buildProfileList(userNames) {
             .then((idResult) => {
               profiles.push(idResult._params);
               if (position + 1 < userNames.length) {
-                cb(position + 1);
+                build(position + 1);
               } else {
                 resolve('complete');
               }
@@ -158,7 +147,7 @@ function buildProfileList(userNames) {
         })
     }
   })
-  cb(0)
+  build(0)
 }
 
 app.post('/medias', (req, res) => {
@@ -203,27 +192,21 @@ app.get('/csv', (req, res) => {
   })
 })
 
-const rateTestIds = [
-  '4634067144',
-]
-for (let i = 0; i < 2000; i++) {
-  rateTestIds.push('4634067144');
-}
-
 app.post('/followers', (req, res) => {
-  const followerDetails = [];
   ig.getFollowers(req.body.userId, currentSession.session)
     .then((result) => {
       res.json(result);
     })
 })
 
+// INITIALIZATION PROCEDURES HERE
+
 ig.initialize()
   .then((session) => {
     currentSession.session = session;
   });
 
-const PORT = 5760;
+const PORT = 5760; // find default port
 
 app.listen(PORT, () => {
   console.log('listening on port: ', PORT);
