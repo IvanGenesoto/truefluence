@@ -205,6 +205,29 @@ Database.prototype.usernameExists = function (username) {
   });
 }
 
+Database.prototype.createTask = function (primaryUserId) {
+  const timeNow = new Date(Date.now()).toISOString();
+  const task = {
+    primary_user_id: primaryUserId,
+    type: 'scrape',
+    created_at: timeNow,
+    status: 'queued',
+    count: 0,
+  }
+  return knex('tasks').insert(task);
+}
+
+Database.prototype.taskExists = function (primaryUserId) {
+  return new Promise((resolve, reject) => {
+    knex('tasks')
+      .count('*')
+      .where('primary_user_id', primaryUserId)
+      .then(result => {
+        resolve(result[0].count > 0);
+      });
+  });
+}
+
 Database.prototype.upsertUser = function (user) {
   return new Promise((resolve, reject) => {
     knex('users')

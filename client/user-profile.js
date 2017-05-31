@@ -64,25 +64,33 @@ const UserProfile = props => {
     store.dispatch({
       type: 'SHOW_LOADER'
     });
-    fetch('/gather', {
+    // fetch('/gather', {
+    //   method: 'POST',
+    //   headers: { 'Content-Type': 'application/json' },
+    //   body: JSON.stringify({ username: profile.username })
+    // })
+    //   .then(result => result.json())
+    //   .then(followers => {
+    //     addMediasStats(followers)
+    //       .then(statsFollowers => {
+    //         store.dispatch({
+    //           type: 'HIDE_LOADER'
+    //         });
+    //         store.dispatch({
+    //           type: 'SHOW_FOLLOWERS',
+    //           followers: statsFollowers
+    //         })
+
+    //       })
+    //     // database.topFollowed(result)
+    //   })
+    fetch('/test-task', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ username: profile.username })
+      body: JSON.stringify({ id: profile.id })
     })
-      .then(result => result.json())
-      .then(followers => {
-        addMediasStats(followers)
-          .then(statsFollowers => {
-            store.dispatch({
-              type: 'HIDE_LOADER'
-            });
-            store.dispatch({
-              type: 'SHOW_FOLLOWERS',
-              followers: statsFollowers
-            })
-
-          })
-        // database.topFollowed(result)
+      .then(result => {
+        console.log('result on client-side:', result);
       })
   }
   return (

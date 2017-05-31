@@ -67,6 +67,21 @@ app.post('/account', (req, res) => {
     })
 })
 
+app.post('/test-task', (req, res) => {
+  database.taskExists(req.body.id)
+    .then(result => {
+      if (result) {
+        console.log('task exists!');
+        res.send('task exists');
+      } else {
+        database.createTask(req.body.id)
+          .then(task => {
+            res.json(task);
+          })
+      }
+    })
+})
+
 app.post('/analyze', (req, res) => {
   database.getTop
 })
