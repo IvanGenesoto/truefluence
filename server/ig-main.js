@@ -74,7 +74,7 @@ IG.prototype.getFollowers = function(userId, session) {
     let feed = new Client.Feed.AccountFollowers(session, userId, 1000);
     function retrieve() {
       feed.get()
-        // .then((result) => {
+        .then((result) => {
         //   counter++;
           result.map(user => { followers.push(user._params); });
         //   if (feed.isMoreAvailable()) {
@@ -90,7 +90,7 @@ IG.prototype.getFollowers = function(userId, session) {
         //     resolve(followers);
         //   }
           resolve(followers);
-        // })
+        })
     }
     retrieve();
   })

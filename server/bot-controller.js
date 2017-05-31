@@ -39,6 +39,7 @@ const defaultTaskPipeline = {
 const taskPipeline = (state = defaultTaskPipeline, action) => {
   switch (action.type) {
     case 'TASKS_AVAILABLE':
+      console.log('omg, tasks availableee');
       state.tasks = true;
       return state;
     case 'PROFILES_AVAILABLE':

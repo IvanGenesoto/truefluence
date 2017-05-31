@@ -91,6 +91,7 @@ const UserProfile = props => {
     })
       .then(result => {
         console.log('result on client-side:', result);
+        
       })
   }
   return (

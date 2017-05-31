@@ -13,6 +13,9 @@ const async = require('async');
 const ParseScrape = require('./parse-scrape');
 const Scraper = require('./scraper');
 const Metrics = require('./metrics');
+const TaskManager = require('./task-manager');
+const taskManager = new TaskManager();
+const botController = require('./bot-controller');
 
 const currentSession = { initialized: false, session: {} };
 
@@ -68,15 +71,22 @@ app.post('/account', (req, res) => {
 })
 
 app.post('/test-task', (req, res) => {
+  const state = botController.getState().botStatus;
+  console.log('egon:', state.egon);
   database.taskExists(req.body.id)
     .then(result => {
       if (result) {
         console.log('task exists!');
         res.send('task exists');
+        taskManager.startTask(1, currentSession.session);
       } else {
         database.createTask(req.body.id)
           .then(task => {
             res.json(task);
+            botController.dispatch({
+              type: 'TASKS_AVAILABLE'
+            });
+            
           })
       }
     })

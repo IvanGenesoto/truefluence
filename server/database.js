@@ -228,6 +228,27 @@ Database.prototype.taskExists = function (primaryUserId) {
   });
 }
 
+Database.prototype.updateTask = function (task) {
+  return knex('tasks')
+      .where('id', task.id)
+      .update(task);
+
+}
+
+Database.prototype.getTask = function (taskId) {
+  return new Promise((resolve, reject) => {
+    knex('tasks')
+      .where('id', taskId)
+      .then(result => {
+        resolve(result);
+      })
+  })
+}
+
+Database.prototype.getNextTask = function () {
+
+}
+
 Database.prototype.upsertUser = function (user) {
   return new Promise((resolve, reject) => {
     knex('users')
