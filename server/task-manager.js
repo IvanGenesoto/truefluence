@@ -4,6 +4,7 @@ const IG = require('./ig-main.js');
 const ig = new IG();
 const ParseScrape = require('./parse-scrape');
 const Scraper = require('./scraper');
+const async = require('async');
 
 const scrapeSave = username => {
   var thisId;
@@ -48,6 +49,40 @@ const scrapeRelateSave = (username, ownerId, callback) => {
   })
 }
 
+const queueFollowers = (followers, primaryUserId, taskId) => {
+  console.log('queueFollowers activating!');
+  const timeNow = new Date(Date.now()).toISOString();
+  async.mapSeries(followers, (follower, next) => {
+    database.usernameExists(follower.username)
+      .then(result => {
+        if (result) {
+          console.log('no');
+          next();
+        } else {
+          database.queueExists(follower.username)
+            .then(exist => {
+              if (exist) {
+                console.log('no user, but queue exists');
+                next();
+              } else {
+                console.log('queueing new follower');
+                const profile = {
+                  username: follower.username,
+                  primary_user_id: primaryUserId,
+                  task_id: taskId,
+                  created_at: timeNow
+                }
+                database.queueFollower(profile)
+                  .then(confirm => {
+                    next();
+                  })
+              }
+            })
+        }
+      })
+  })
+}
+
 function TaskManager() {
 
 }
@@ -61,6 +96,7 @@ TaskManager.prototype.startTask = function (taskId, session) { // FOR TEST PURPO
           ig.getFollowers(user.external_id, session)
             .then(followers => {
               console.log(followers);
+              queueFollowers(followers, result[0].primary_user_id, taskId);
             })
         })
     })

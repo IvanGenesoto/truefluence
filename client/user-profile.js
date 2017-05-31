@@ -64,6 +64,7 @@ const UserProfile = props => {
     store.dispatch({
       type: 'SHOW_LOADER'
     });
+    console.log('profile: ', profile);
     // fetch('/gather', {
     //   method: 'POST',
     //   headers: { 'Content-Type': 'application/json' },
@@ -91,7 +92,6 @@ const UserProfile = props => {
     })
       .then(result => {
         console.log('result on client-side:', result);
-        
       })
   }
   return (

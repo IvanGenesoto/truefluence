@@ -238,8 +238,21 @@ Database.prototype.updateTask = function (task) {
 Database.prototype.getTask = function (taskId) {
   return new Promise((resolve, reject) => {
     knex('tasks')
+      .select('*')
       .where('id', taskId)
       .then(result => {
+        resolve(result);
+      })
+  })
+}
+
+Database.prototype.getTaskByUserId = function (userId) {
+  return new Promise((resolve, reject) => {
+    knex('tasks')
+      .select('*')
+      .where('primary_user_id', userId)
+      .then(result => {
+        console.log('get task by user id:', result);
         resolve(result);
       })
   })
@@ -279,6 +292,28 @@ Database.prototype.upsertUser = function (user) {
       })
   })
 }
+
+Database.prototype.queueFollower = function (profile) {
+  return new Promise((resolve, reject) => {
+    knex('queue')
+      .insert(profile)
+      .then(result => {
+        resolve(result);
+      })
+  })
+}
+
+Database.prototype.queueExists = function (username) {
+    return new Promise((resolve, reject) => {
+    knex('queue')
+      .count('*')
+      .where('username', username)
+      .then(result => {
+        resolve(result[0].count > 0);
+      });
+  });
+}
+
 
 Database.prototype.createMedia = function (media) {
   const timeNow = new Date(Date.now()).toISOString();

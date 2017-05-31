@@ -71,14 +71,13 @@ app.post('/account', (req, res) => {
 })
 
 app.post('/test-task', (req, res) => {
-  const state = botController.getState().botStatus;
-  console.log('egon:', state.egon);
-  database.taskExists(req.body.id)
+  database.getTaskByUserId(req.body.id)
     .then(result => {
-      if (result) {
+      console.log(result[0]);
+      if (result[0]) {
         console.log('task exists!');
         res.send('task exists');
-        taskManager.startTask(1, currentSession.session);
+        taskManager.startTask(result[0].id, currentSession.session);
       } else {
         database.createTask(req.body.id)
           .then(task => {
@@ -86,7 +85,6 @@ app.post('/test-task', (req, res) => {
             botController.dispatch({
               type: 'TASKS_AVAILABLE'
             });
-            
           })
       }
     })
