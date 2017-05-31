@@ -90,7 +90,7 @@ IG.prototype.getFollowers = function(userId, session) {
         //     resolve(followers);
         //   }
           resolve(followers);
-        })
+        // })
     }
     retrieve();
   })

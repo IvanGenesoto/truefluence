@@ -36,6 +36,27 @@ const formatUser = rawJSON => {
   return user;
 }
 
+app.post('/search', (req, res) => {
+  database.usernameExists(req.body.username)
+    .then(result => {
+      // if(result) {
+      //   database.getUserByUsername(req.body.username)
+      //     .then(result => {
+      //       console.log('search result:', result);
+      //       res.json(result);
+      //     })
+      // } else {
+        scrapeSave(req.body.username)
+          .then(result => {
+            database.getUserById(result.id)
+              .then(user => {
+                res.json(user);
+              })
+          })
+      // }
+    })
+})
+
 app.post('/account', (req, res) => {
   ig.getAccountByName(req.body.username, currentSession.session)
     .then((result) => {

@@ -172,6 +172,28 @@ Database.prototype.upsertMedia = function (media) {
   })
 }
 
+Database.prototype.getUserByUsername = function (username) {
+  return new Promise((resolve, reject) => {
+    knex('users')
+      .select('*')
+      .where('username', username)
+      .then(result => {
+        resolve(result[0])
+      });
+  });
+}
+
+Database.prototype.getUserById = function (id) {
+  return new Promise((resolve, reject) => {
+    knex('users')
+      .select('*')
+      .where('id', id)
+      .then(result => {
+        resolve(result[0])
+      });
+  });
+}
+
 Database.prototype.usernameExists = function (username) {
   return new Promise((resolve, reject) => {
     knex('users')
@@ -179,8 +201,8 @@ Database.prototype.usernameExists = function (username) {
       .where('username', username)
       .then(result => {
         resolve(result[0].count > 0);
-      })
-  })
+      });
+  });
 }
 
 Database.prototype.upsertUser = function (user) {
