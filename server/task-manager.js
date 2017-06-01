@@ -5,49 +5,9 @@ const ig = new IG();
 const ParseScrape = require('./parse-scrape');
 const Scraper = require('./scraper');
 const async = require('async');
-
-const scrapeSave = username => {
-  var thisId;
-  return new Promise((resolve, reject) => {
-    Scraper(username)
-      .then(primary => {
-        Metrics(primary.user, primary.medias);
-        database.upsertUser(primary.user)
-          .then(result => {
-            database.getIdFromExternalId(primary.user.external_id, 'users')
-              .then(id => {
-                async.mapSeries(primary.medias, (media, next) => {
-                  database.upsertMedia(media)
-                    .then(result => {
-                      next();
-                    })
-                });
-                  resolve({ id: id[0].id, external_id: primary.user.external_id });
-              })
-          })
-      })
-      .catch(err => {
-        reject(err);
-      })
-  });
-}
-
-const scrapeRelateSave = (username, ownerId, callback) => {
-  return new Promise((resolve, reject) => {
-    scrapeSave(username)
-      .then(ids => {
-        database.upsertRelationship(ids.id, ownerId)
-          .then(result => {
-            callback();
-            resolve(result);
-          })
-      })
-      .catch(err => {
-        callback();
-        reject(err);
-      })
-  })
-}
+const controller = require('./bot-controller');
+const ScrapeBot = require('./scrape-bot');
+const scrapeBot = new ScrapeBot();
 
 const queueFollowers = (followers, primaryUserId, taskId) => {
   console.log('queueFollowers activating!');
@@ -69,7 +29,7 @@ const queueFollowers = (followers, primaryUserId, taskId) => {
             full_name: follower.fullName,
             external_id: follower.id,
             private: follower.isPrivate,
-            refreshed_at: null,
+            task_id: taskId
           };
           database.upsertUser(profile)
             .then(newUser => {
@@ -81,6 +41,15 @@ const queueFollowers = (followers, primaryUserId, taskId) => {
             })
         }
       })
+  }, (err, dispatch) => {
+    // this is where it should dispatch that there are more tasks available.
+    // this should signal that if any bots are idle, to start looking again.
+    if (!err) {
+      controller.dispatch({
+        type: 'PROFILES_AVAILABLE'
+      });
+      scrapeBot.startScrape(primaryUserId);
+    }
   })
 }
 

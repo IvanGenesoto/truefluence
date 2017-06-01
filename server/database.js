@@ -105,13 +105,13 @@ Database.prototype.upsertRelationship = function (userId, followingId, following
         .then(result => {
           const count = Number(result[0].count);
           if (count > 0) {
-            // this.updateRelationship(userId, followingId, following)
-            //   .then(result => {
-            //     console.log('relationship updated for', userId);
-            //   })
-            //   .catch(err => {
-            //     console.log('could not update relationship for', userId);
-            //   });
+            this.updateRelationship(userId, followingId, following)
+              .then(result => {
+                console.log('relationship updated for', userId);
+              })
+              .catch(err => {
+                console.log('could not update relationship for', userId);
+              });
           } else {
             this.createRelationship(userId, followingId, following)
               .then(result => {
@@ -124,6 +124,21 @@ Database.prototype.upsertRelationship = function (userId, followingId, following
           resolve('complete');
         })
   })
+}
+
+Database.prototype.getNextQueue = function (botId) {
+  return knex('users')
+    .select('username')
+    .whereNotNull('task_id')
+    // .where('task_id', '99999')
+    .limit(1);
+}
+
+Database.prototype.completeScrape = function (username) {
+  console.log('complete scrape:', username);
+  return knex('users')
+    .where('username', username)
+    .update({task_id: null})
 }
 
 Database.prototype.getIdFromExternalId = function (externalId, tableName) {
@@ -295,7 +310,6 @@ Database.prototype.upsertUser = function (user) {
 }
 
 Database.prototype.queueFollower = function (profile) {
-  profile.refreshed_at = null;
   return new Promise((resolve, reject) => {
     this.upsertUser(profile)
       .then(result => {

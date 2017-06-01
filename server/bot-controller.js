@@ -43,6 +43,7 @@ const taskPipeline = (state = defaultTaskPipeline, action) => {
       state.tasks = true;
       return state;
     case 'PROFILES_AVAILABLE':
+      console.log('omg, profiles available!');
       state.profiles = true;
       return state;
     default:
