@@ -1,6 +1,8 @@
 const { createStore, combineReducers } = require('redux');
 const ScrapeBot = require('./scrape-bot');
-const scrapeBot = new ScrapeBot();
+const TaskManager = require('./task-manager');
+const taskManager = new TaskManager();
+
 // bot declarations;
 const egon = new ScrapeBot('EGON', 0);
 const winston = new ScrapeBot('WINSTON', 1);
@@ -12,8 +14,7 @@ const defaultBotStatus = {
   ray: true,
   peter: false,
   winston: false,
-  janine: false,
-  gozer: false
+  janine: false
 }
 
 const botStatus = (state = defaultBotStatus, action) => {
@@ -32,8 +33,6 @@ const botStatus = (state = defaultBotStatus, action) => {
     case 'JANINE_READY':
       state.janine = true;
       return state;
-    case 'GOZER_READY':
-      return;
     case 'EGON_BUSY':
       console.log('egon now busy');
       state.egon = false;
@@ -52,8 +51,8 @@ const taskPipeline = (state = defaultTaskPipeline, action) => {
   switch (action.type) {
     case 'TASKS_AVAILABLE':
       console.log('omg, tasks availableee');
-      console.log(controller.getState());
       // start task
+      restartTaskManager();
       state.tasks = true;
       return state;
     case 'PROFILES_AVAILABLE':
@@ -64,6 +63,13 @@ const taskPipeline = (state = defaultTaskPipeline, action) => {
       return state;
     default:
       return state;
+  }
+}
+
+const restartTaskManager = () => {
+  console.log('restarting, TaskManager:', taskManager);
+  if (taskManager.ready) {
+    taskManager.startTasks();
   }
 }
 

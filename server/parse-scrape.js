@@ -1,7 +1,7 @@
 const ParseScrape = objJSON => {
     // return new Promise((resolve, reject) => {
         var medias = [];
-        console.log('objJSON:', objJSON);
+        // console.log('objJSON:', objJSON);
         const user = {
             username: objJSON.user.username,
             picture_url: objJSON.user.profile_pic_url,

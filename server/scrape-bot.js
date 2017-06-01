@@ -4,7 +4,6 @@ const ParseScrape = require('./parse-scrape');
 const Scraper = require('./scraper');
 const Metrics = require('./metrics');
 const async = require('async');
-const controller = require('./bot-controller');
 
 const scrapeSave = username => {
   var thisId;
@@ -36,7 +35,6 @@ const scrapeRelateSave = (username, ownerId) => {
   return new Promise((resolve, reject) => {
     scrapeSave(username)
       .then(ids => {
-        console.log('upsertrelationship:', ids.id, ownerId);
         database.upsertRelationship(ids.id, ownerId, true)
           .then(result => {
             console.log()

@@ -135,7 +135,6 @@ Database.prototype.getNextQueue = function (botId) {
 }
 
 Database.prototype.completeScrape = function (username) {
-  console.log('complete scrape:', username);
   return knex('users')
     .where('username', username)
     .update({task_id: null})
@@ -162,6 +161,7 @@ Database.prototype.updateUser = function (user) {
   user.updated_at = timeNow;
   return knex('users')
     .where('external_id', user.external_id)
+    .returning('id')
     .update(user);
 }
 
@@ -263,14 +263,23 @@ Database.prototype.getTaskByUserId = function (userId) {
       .select('*')
       .where('primary_user_id', userId)
       .then(result => {
-        console.log('get task by user id:', result);
         resolve(result);
       })
   })
 }
 
 Database.prototype.getNextTask = function () {
+  return knex('tasks')
+    .select('*')
+    .where('follower_list_complete', false)
+    .orderBy('created_at', 'asc')
+    .limit(1)
+}
 
+Database.prototype.updateTask = function (taskId, params) {
+  return knex('tasks')
+    .where('id', taskId)
+    .update(params)
 }
 
 Database.prototype.upsertUser = function (user) {
