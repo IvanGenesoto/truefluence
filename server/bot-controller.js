@@ -1,8 +1,15 @@
 const { createStore, combineReducers } = require('redux');
+const ScrapeBot = require('./scrape-bot');
+const scrapeBot = new ScrapeBot();
+// bot declarations;
+const egon = new ScrapeBot('EGON', 0);
+const winston = new ScrapeBot('WINSTON', 1);
+const ray = new ScrapeBot('RAY', 2);
+const peter = new ScrapeBot('PETER', 3);
 
 const defaultBotStatus = {
-  egon: false,
-  ray: false,
+  egon: true,
+  ray: true,
   peter: false,
   winston: false,
   janine: false,
@@ -12,6 +19,7 @@ const defaultBotStatus = {
 const botStatus = (state = defaultBotStatus, action) => {
   switch (action.type) {
     case 'EGON_READY':
+      console.log('egon now ready');
       state.egon = true;
       return state;
     case 'RAY_READY':
@@ -26,6 +34,10 @@ const botStatus = (state = defaultBotStatus, action) => {
       return state;
     case 'GOZER_READY':
       return;
+    case 'EGON_BUSY':
+      console.log('egon now busy');
+      state.egon = false;
+      return state;
     default:
       return state;
   }
@@ -40,16 +52,36 @@ const taskPipeline = (state = defaultTaskPipeline, action) => {
   switch (action.type) {
     case 'TASKS_AVAILABLE':
       console.log('omg, tasks availableee');
+      console.log(controller.getState());
+      // start task
       state.tasks = true;
       return state;
     case 'PROFILES_AVAILABLE':
       console.log('omg, profiles available!');
+      // start harvesters
+      restartIdleBots();
       state.profiles = true;
       return state;
     default:
       return state;
   }
 }
+
+const restartIdleBots = () => {
+  if (egon.ready) {
+    egon.startScrape();
+  }
+  if (winston.ready) {
+    winston.startScrape();
+  }
+  if (ray.ready) {
+    ray.startScrape();
+  }
+  if (peter.ready) {
+    peter.startScrape();
+  }
+}
+
 const reducer = combineReducers({
   botStatus,
   taskPipeline

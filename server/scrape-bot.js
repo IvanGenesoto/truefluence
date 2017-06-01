@@ -4,6 +4,7 @@ const ParseScrape = require('./parse-scrape');
 const Scraper = require('./scraper');
 const Metrics = require('./metrics');
 const async = require('async');
+const controller = require('./bot-controller');
 
 const scrapeSave = username => {
   var thisId;
@@ -48,31 +49,44 @@ const scrapeRelateSave = (username, ownerId) => {
   })
 }
 
-function ScrapeBot() {
-
+function ScrapeBot(botName, id) {
+  this.name = botName;
+  this.ready = true;
+  this.id = id;
 }
 
-ScrapeBot.prototype.startScrape = function (primaryId) {
+ScrapeBot.prototype.startScrape = function () {
+  const that = this;
+  that.ready = false;
   return new Promise((resolve, reject) => {
     function scrape() {
-      database.getNextQueue(1)
+      database.getNextQueue(that.id)
         .then(result => {
+          console.log('get next queue: ', result);
           if (result[0]) {
             const username = result[0].username;
-            scrapeRelateSave(username, primaryId)
-              .then(result => {
-                //remove task id
-                database.completeScrape(username)
-                  .then(finish => {
-                    console.log('scrape done');
+            const taskId = result[0].task_id;
+            database.getTask(taskId)
+              .then(task => {
+                const primaryId = task[0].primary_user_id;
+                scrapeRelateSave(username, primaryId)
+                  .then(result => {
+                    //remove task id
+                    database.completeScrape(username)
+                      .then(finish => {
+                        console.log(that.name, 'scrape done');
+                        scrape();
+                      })
+                  })
+                  .catch(err => {
+                    console.error(err);
                     scrape();
                   })
-              })
-              .catch(err => {
-                console.error(err);
-                scrape();
+
               })
           } else {
+            // set status to ready
+            that.ready = true;
             resolve('complete');
           }
         })
@@ -84,50 +98,5 @@ ScrapeBot.prototype.startScrape = function (primaryId) {
 module.exports = ScrapeBot;
 
 /*
-
-
-truefluence=> select username, external_id from users where task_id = 4;
-           username            | external_id
--------------------------------+-------------
- evan394                       | 314321072
- _happy_doggies_               | 3986200022
- salvydog                      | 5534393052
- jeremyisworm                  | 2295145926
- jilleverton                   | 15890960
- corriewinebender              | 254144916
- joannalhurt                   | 229608526
- vanavicious                   | 3552999524
- raquelott.real.estate         | 1318050567
- shaddinger33                  | 31743975
- michaelmte                    | 512034972
- jkrow1313                     | 3148314627
- sister_smith_pup              | 5462488995
- red.jah                       | 5453114760
- quantracycherry               | 474214854
- courtneybreelucas             | 213725480
- spencer_kc                    | 1584647809
- gladstonefiredepartment       | 5406336083
- ryjoindustries                | 584730775
- spence74                      | 4748110306
- holamariia                    | 4785210
- johngunter78                  | 5397077024
- dajo1273                      | 33612489
- robotick                      | 243514590
- swflinn                       | 30843631
- poppyandfinn                  | 54164454
- scottalena                    | 475334271
- breweryemperial               | 3200594817
- ashmgreen9                    | 144222025
- blamejohnbriley               | 3121614476
- katieflynn81                  | 1798335984
- bigchelzzz82                  | 294133200
- bmase26                       | 2278353636
- _wizardsneverdie              | 218140408
- hottubcrochetmachine          | 4886370491
- nickriojas                    | 46170283
- damonwilson76                 | 4832715907
- therescueprojectkc            | 4136289501
- paydayloan.realfast           | 2946490920
- ucuida97                      | 4577984196
- scall83                       | 178079880
+remove every relationship where following id = 7 (mark)
 */

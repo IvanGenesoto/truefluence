@@ -33,7 +33,6 @@ const queueFollowers = (followers, primaryUserId, taskId) => {
           };
           database.upsertUser(profile)
             .then(newUser => {
-              console.log('newUser:', newUser[0]);
               database.upsertRelationship(newUser[0], primaryUserId, true)
                 .then(related => {
                   next();
@@ -48,7 +47,6 @@ const queueFollowers = (followers, primaryUserId, taskId) => {
       controller.dispatch({
         type: 'PROFILES_AVAILABLE'
       });
-      scrapeBot.startScrape(primaryUserId);
     }
   })
 }

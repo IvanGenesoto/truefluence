@@ -128,10 +128,10 @@ Database.prototype.upsertRelationship = function (userId, followingId, following
 
 Database.prototype.getNextQueue = function (botId) {
   return knex('users')
-    .select('username')
+    .select('username', 'task_id', 'id')
+    .whereRaw('id % 4 = ?', [botId])
     .whereNotNull('task_id')
-    // .where('task_id', '99999')
-    .limit(1);
+    .limit(1)
 }
 
 Database.prototype.completeScrape = function (username) {
@@ -252,14 +252,9 @@ Database.prototype.updateTask = function (task) {
 }
 
 Database.prototype.getTask = function (taskId) {
-  return new Promise((resolve, reject) => {
-    knex('tasks')
-      .select('*')
-      .where('id', taskId)
-      .then(result => {
-        resolve(result);
-      })
-  })
+  return knex('tasks')
+    .select('*')
+    .where('id', taskId)
 }
 
 Database.prototype.getTaskByUserId = function (userId) {
