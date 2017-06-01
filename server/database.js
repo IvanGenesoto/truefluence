@@ -38,7 +38,6 @@ Database.prototype.topFollowed = function (userId) {
     .limit(10);
 }
 
-// Database.prototype.topFollowersByLikeRatio = 
 
 Database.prototype.clearTable = function (tablename) {
   return knex(tableName).truncate();
@@ -139,6 +138,7 @@ Database.prototype.createUser = function (user) {
   user.created_at = timeNow;
   user.updated_at = timeNow;
   return knex('users')
+    .returning('id')
     .insert(user);
 }
 
@@ -173,6 +173,28 @@ Database.prototype.upsertMedia = function (media) {
   })
 }
 
+Database.prototype.getUserByUsername = function (username) {
+  return new Promise((resolve, reject) => {
+    knex('users')
+      .select('*')
+      .where('username', username)
+      .then(result => {
+        resolve(result[0])
+      });
+  });
+}
+
+Database.prototype.getUserById = function (id) {
+  return new Promise((resolve, reject) => {
+    knex('users')
+      .select('*')
+      .where('id', id)
+      .then(result => {
+        resolve(result[0])
+      });
+  });
+}
+
 Database.prototype.usernameExists = function (username) {
   return new Promise((resolve, reject) => {
     knex('users')
@@ -180,8 +202,65 @@ Database.prototype.usernameExists = function (username) {
       .where('username', username)
       .then(result => {
         resolve(result[0].count > 0);
+      });
+  });
+}
+
+Database.prototype.createTask = function (primaryUserId) {
+  const timeNow = new Date(Date.now()).toISOString();
+  const task = {
+    primary_user_id: primaryUserId,
+    type: 'scrape',
+    created_at: timeNow,
+    status: 'queued',
+    count: 0,
+  }
+  return knex('tasks').insert(task);
+}
+
+Database.prototype.taskExists = function (primaryUserId) {
+  return new Promise((resolve, reject) => {
+    knex('tasks')
+      .count('*')
+      .where('primary_user_id', primaryUserId)
+      .then(result => {
+        resolve(result[0].count > 0);
+      });
+  });
+}
+
+Database.prototype.updateTask = function (task) {
+  return knex('tasks')
+      .where('id', task.id)
+      .update(task);
+
+}
+
+Database.prototype.getTask = function (taskId) {
+  return new Promise((resolve, reject) => {
+    knex('tasks')
+      .select('*')
+      .where('id', taskId)
+      .then(result => {
+        resolve(result);
       })
   })
+}
+
+Database.prototype.getTaskByUserId = function (userId) {
+  return new Promise((resolve, reject) => {
+    knex('tasks')
+      .select('*')
+      .where('primary_user_id', userId)
+      .then(result => {
+        console.log('get task by user id:', result);
+        resolve(result);
+      })
+  })
+}
+
+Database.prototype.getNextTask = function () {
+
 }
 
 Database.prototype.upsertUser = function (user) {
@@ -215,6 +294,28 @@ Database.prototype.upsertUser = function (user) {
   })
 }
 
+Database.prototype.queueFollower = function (profile) {
+  profile.refreshed_at = null;
+  return new Promise((resolve, reject) => {
+    this.upsertUser(profile)
+      .then(result => {
+        resolve(result);
+      })
+  })
+}
+
+Database.prototype.queueExists = function (username) {
+    return new Promise((resolve, reject) => {
+      knex('user')
+        .count('*')
+        .where('username', username)
+        .then(result => {
+          resolve(result[0].count > 0);
+        });
+  });
+}
+
+
 Database.prototype.createMedia = function (media) {
   const timeNow = new Date(Date.now()).toISOString();
   media.created_at = timeNow;
@@ -231,6 +332,21 @@ Database.prototype.updateMedia = function (media) {
     .update(media);
 }
 
-
+Database.prototype.insertObjects = function (tableName, arrObjData) {
+  return knex.transaction((trx) => {
+    return knex.batchInsert(tableName, arrObjData)
+      .transacting(trx)
+      .then(trx.commit)
+      .catch(trx.rollback);
+  })
+    .then(() => {
+      console.log('transaction successful')
+      return 'transaction successful';
+    })
+    .catch(() => {
+      console.log('transaction failed');
+      return 'transaction failed';
+    });
+}
 
 exports.Database = Database;

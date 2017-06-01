@@ -62,27 +62,36 @@ const UserProfile = props => {
       type: 'HIDE_LIST'
     });
     store.dispatch({
-      type: 'SHOW_LOADER'
+      type: 'SHOW_PROGRESS'
     });
-    fetch('/gather', {
+    console.log('profile:', profile);
+    // fetch('/gather', {
+    //   method: 'POST',
+    //   headers: { 'Content-Type': 'application/json' },
+    //   body: JSON.stringify({ username: profile.username })
+    // })
+    //   .then(result => result.json())
+    //   .then(followers => {
+    //     addMediasStats(followers)
+    //       .then(statsFollowers => {
+    //         store.dispatch({
+    //           type: 'HIDE_LOADER'
+    //         });
+    //         store.dispatch({
+    //           type: 'SHOW_FOLLOWERS',
+    //           followers: statsFollowers
+    //         })
+
+    //       })
+    //     // database.topFollowed(result)
+    //   })
+    fetch('/test-task', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ username: profile.username })
+      body: JSON.stringify({ id: profile.id })
     })
-      .then(result => result.json())
-      .then(followers => {
-        addMediasStats(followers)
-          .then(statsFollowers => {
-            store.dispatch({
-              type: 'HIDE_LOADER'
-            });
-            store.dispatch({
-              type: 'SHOW_FOLLOWERS',
-              followers: statsFollowers
-            })
-
-          })
-        // database.topFollowed(result)
+      .then(result => {
+        console.log('result on client-side:', result);
       })
   }
   return (
@@ -90,20 +99,20 @@ const UserProfile = props => {
       <div>
         <div>
           <a href={ profileLink }>
-            <img className='ui small image centered column' src={ profile.picture } />
+            <img className='ui small image centered column' src={ profile.picture_url } />
           </a>
         </div>
         <div>
           <ul className="ui list">
             <li>User Name: { profile.username }</li>
-            <li>User ID: { profile.id }</li>
-            <li>Followers: { profile.followerCount }</li>
-            <li>Posts: { profile.mediaCount }</li>
+            <li>User ID: { profile.external_id }</li>
+            <li>Followers: { profile.follower_count }</li>
+            <li>Posts: { profile.post_count }</li>
           </ul>
         </div>
       </div>
       <div className='ui four column centered row'>
-        <p>{ profile.biography }</p>
+        <p>{ profile.bio }</p>
         <button
           className='ui button'
           onClick={ handleAnalyze }>Analyze Followers</button>

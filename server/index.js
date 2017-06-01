@@ -13,7 +13,10 @@ const async = require('async');
 const ParseScrape = require('./parse-scrape');
 const Scraper = require('./scraper');
 const Metrics = require('./metrics');
-
+const TaskManager = require('./task-manager');
+const taskManager = new TaskManager();
+const botController = require('./bot-controller');
+const store = require('./../client/store');
 const currentSession = { initialized: false, session: {} };
 
 app.use(staticMiddleware);
@@ -36,6 +39,27 @@ const formatUser = rawJSON => {
   return user;
 }
 
+app.post('/search', (req, res) => {
+  database.usernameExists(req.body.username)
+    .then(result => {
+      // if(result) {
+      //   database.getUserByUsername(req.body.username)
+      //     .then(result => {
+      //       console.log('search result:', result);
+      //       res.json(result);
+      //     })
+      // } else {
+        scrapeSave(req.body.username)
+          .then(result => {
+            database.getUserById(result.id)
+              .then(user => {
+                res.json(user);
+              })
+          })
+      // }
+    })
+})
+
 app.post('/account', (req, res) => {
   ig.getAccountByName(req.body.username, currentSession.session)
     .then((result) => {
@@ -43,6 +67,28 @@ app.post('/account', (req, res) => {
         .then((idResult) => {
           res.json(idResult._params);
         })
+    })
+})
+
+app.post('/test-task', (req, res) => {
+  database.getTaskByUserId(req.body.id)
+    .then(result => {
+      console.log(result[0]);
+      if (result[0]) {
+        console.log('task exists!');
+        store.dispatch({
+          type: 'SHOW_PROGRESS'
+        })
+        taskManager.startTask(result[0].id, currentSession.session);
+      } else {
+        database.createTask(req.body.id)
+          .then(task => {
+            res.json(task);
+            botController.dispatch({
+              type: 'TASKS_AVAILABLE'
+            });
+          })
+      }
     })
 })
 
@@ -127,22 +173,11 @@ app.post('/gather', (req, res) => {
   
 });
 
-const asyncCallback = () => {
-  console.log('called back');
-}
-const tempCSV = [
-  'eatify',
-  '123chocula',
-  'southerncoffeelover',
-  'eatifyjohn',
-  'miomiura'
-]
-
 function buildProfileList(userNames) {
   console.log('starting up');
   const profiles = []
   return new Promise((resolve, reject) => {
-    function cb(position) {
+    function build(position) {
       console.log('looking up ' + userNames[position]);
       ig.getAccountByName(req.body.username, currentSession.session)
         .then((result) => {
@@ -150,7 +185,7 @@ function buildProfileList(userNames) {
             .then((idResult) => {
               profiles.push(idResult._params);
               if (position + 1 < userNames.length) {
-                cb(position + 1);
+                build(position + 1);
               } else {
                 resolve('complete');
               }
@@ -158,7 +193,7 @@ function buildProfileList(userNames) {
         })
     }
   })
-  cb(0)
+  build(0)
 }
 
 app.post('/medias', (req, res) => {
@@ -203,27 +238,21 @@ app.get('/csv', (req, res) => {
   })
 })
 
-const rateTestIds = [
-  '4634067144',
-]
-for (let i = 0; i < 2000; i++) {
-  rateTestIds.push('4634067144');
-}
-
 app.post('/followers', (req, res) => {
-  const followerDetails = [];
   ig.getFollowers(req.body.userId, currentSession.session)
     .then((result) => {
       res.json(result);
     })
 })
 
+// INITIALIZATION PROCEDURES HERE
+
 ig.initialize()
   .then((session) => {
     currentSession.session = session;
   });
 
-const PORT = 5760;
+const PORT = 5760; // find default port
 
 app.listen(PORT, () => {
   console.log('listening on port: ', PORT);
