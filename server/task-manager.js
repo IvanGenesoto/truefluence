@@ -53,30 +53,31 @@ const queueFollowers = (followers, primaryUserId, taskId) => {
   console.log('queueFollowers activating!');
   const timeNow = new Date(Date.now()).toISOString();
   async.mapSeries(followers, (follower, next) => {
-    database.usernameExists(follower.username)
+    database.getUserByUsername(follower.username)
       .then(result => {
         if (result) {
-          console.log('no');
-          next();
+          console.log('old user, upserting relationship');
+          database.upsertRelationship(result.id, primaryUserId, true)
+            .then(related => {
+              next();
+            });
         } else {
-          database.queueExists(follower.username)
-            .then(exist => {
-              if (exist) {
-                console.log('no user, but queue exists');
-                next();
-              } else {
-                console.log('queueing new follower');
-                const profile = {
-                  username: follower.username,
-                  primary_user_id: primaryUserId,
-                  task_id: taskId,
-                  created_at: timeNow
-                }
-                database.queueFollower(profile)
-                  .then(confirm => {
-                    next();
-                  })
-              }
+          console.log('new user, inserting');
+          const profile = {
+            username: follower.username,
+            picture_url: follower.picture,
+            full_name: follower.fullName,
+            external_id: follower.id,
+            private: follower.isPrivate,
+            refreshed_at: null,
+          };
+          database.upsertUser(profile)
+            .then(newUser => {
+              console.log('newUser:', newUser[0]);
+              database.upsertRelationship(newUser[0], primaryUserId, true)
+                .then(related => {
+                  next();
+                })
             })
         }
       })
@@ -95,7 +96,7 @@ TaskManager.prototype.startTask = function (taskId, session) { // FOR TEST PURPO
           // console.log(user.external_id);
           ig.getFollowers(user.external_id, session)
             .then(followers => {
-              console.log(followers);
+              // console.log(followers);
               queueFollowers(followers, result[0].primary_user_id, taskId);
             })
         })
@@ -104,6 +105,10 @@ TaskManager.prototype.startTask = function (taskId, session) { // FOR TEST PURPO
   // .then((result) => {
   //   console.log(result);
   // })
+}
+
+TaskManager.prototype.assignQueue = function () {
+
 }
 
 TaskManager.prototype.startNextTask = function () {

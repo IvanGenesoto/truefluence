@@ -138,6 +138,7 @@ Database.prototype.createUser = function (user) {
   user.created_at = timeNow;
   user.updated_at = timeNow;
   return knex('users')
+    .returning('id')
     .insert(user);
 }
 
@@ -294,9 +295,9 @@ Database.prototype.upsertUser = function (user) {
 }
 
 Database.prototype.queueFollower = function (profile) {
+  profile.refreshed_at = null;
   return new Promise((resolve, reject) => {
-    knex('queue')
-      .insert(profile)
+    this.upsertUser(profile)
       .then(result => {
         resolve(result);
       })
@@ -305,12 +306,12 @@ Database.prototype.queueFollower = function (profile) {
 
 Database.prototype.queueExists = function (username) {
     return new Promise((resolve, reject) => {
-    knex('queue')
-      .count('*')
-      .where('username', username)
-      .then(result => {
-        resolve(result[0].count > 0);
-      });
+      knex('user')
+        .count('*')
+        .where('username', username)
+        .then(result => {
+          resolve(result[0].count > 0);
+        });
   });
 }
 

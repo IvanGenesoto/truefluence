@@ -62,9 +62,9 @@ const UserProfile = props => {
       type: 'HIDE_LIST'
     });
     store.dispatch({
-      type: 'SHOW_LOADER'
+      type: 'SHOW_PROGRESS'
     });
-    console.log('profile: ', profile);
+    console.log('profile:', profile);
     // fetch('/gather', {
     //   method: 'POST',
     //   headers: { 'Content-Type': 'application/json' },

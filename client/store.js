@@ -23,6 +23,18 @@ const loader = (state = false, action) => {
   }
 }
 
+const progress = (state = false, action) => {
+  switch (action.type) {
+    case 'SHOW_PROGRESS':
+      console.log('tryign to show progress');
+      return true;
+    case 'HIDE_PROGRESS':
+      return false;
+    default:
+      return state;
+  }
+}
+
 const userProfile = (state = {}, action) => {
   switch (action.type) {
     case 'SAVE_PROFILE':
@@ -45,20 +57,23 @@ const followerList = (state = [], action) => {
   }
 }
 
-const progress = (state = {}, action) => {
-  switch (action.type) {
-    case 'CHECK_PROGRESS':
-      return {};
-    default:
-      return state;
-  }
-}
+// const progress = (state = {}, action) => {
+//   switch (action.type) {
+//     case 'CHECK_PROGRESS':
+//       return {};
+//     case 'TASK_EXISTS':
+//       return { queued: true };
+//     default:
+//       return state;
+//   }
+// }
 
 const reducer = combineReducers({
   usernameInput,
   userProfile,
   followerList,
-  loader
+  loader,
+  progress
 });
 
 const store = createStore(reducer);

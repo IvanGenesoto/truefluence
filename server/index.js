@@ -16,7 +16,7 @@ const Metrics = require('./metrics');
 const TaskManager = require('./task-manager');
 const taskManager = new TaskManager();
 const botController = require('./bot-controller');
-
+const store = require('./../client/store');
 const currentSession = { initialized: false, session: {} };
 
 app.use(staticMiddleware);
@@ -76,7 +76,9 @@ app.post('/test-task', (req, res) => {
       console.log(result[0]);
       if (result[0]) {
         console.log('task exists!');
-        res.send('task exists');
+        store.dispatch({
+          type: 'SHOW_PROGRESS'
+        })
         taskManager.startTask(result[0].id, currentSession.session);
       } else {
         database.createTask(req.body.id)
