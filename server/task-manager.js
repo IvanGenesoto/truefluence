@@ -61,10 +61,13 @@ TaskManager.prototype.startTasks = function () {
   const that = this;
   that.ready = false;
   console.log('task manager says hi');
-  taskBot.startTasks()
-    .then(result => {
-      that.ready = true;
-    })
+  return new Promise((resolve, reject) => {
+    taskBot.startTasks()
+      .then(result => {
+        that.ready = true;
+        resolve('done');
+      })
+  })
 }
 
 // TaskManager.prototype.startTask = function (taskId, session) { // FOR TEST PURPOSES ONLY

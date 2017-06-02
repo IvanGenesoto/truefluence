@@ -3,7 +3,7 @@ const ig = new IG();
 const Database = require('./database').Database;
 const database = new Database();
 const async = require('async');
-const controllert = require('./bot-controller');
+const { controller, restartIdleBots } = require('./bot-controller');
 const currentSession = { initialized: false, session: {} };
 
 ig.initialize()
@@ -12,6 +12,7 @@ ig.initialize()
   });
 
 const queueFollowers = (followers, primaryUserId, taskId) => {
+  
   console.log('queueFollowers activating!');
   const timeNow = new Date(Date.now()).toISOString();
   return new Promise((resolve, reject) => {
@@ -47,9 +48,9 @@ const queueFollowers = (followers, primaryUserId, taskId) => {
         })
     }, (err, dat) => {
       if (!err) {
-        controllert.dispatch({
-          type: 'PROFILES_AVAILABLE'
-        })
+        // controllert.dispatch({
+        //   type: 'PROFILES_AVAILABLE'
+        // })
         resolve('complete');
       } else {
         reject(err);

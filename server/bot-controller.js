@@ -69,7 +69,10 @@ const taskPipeline = (state = defaultTaskPipeline, action) => {
 const restartTaskManager = () => {
   console.log('restarting, TaskManager:', taskManager);
   if (taskManager.ready) {
-    taskManager.startTasks();
+    taskManager.startTasks()
+      .then(result => {
+        restartIdleBots();
+      })
   }
 }
 
@@ -95,4 +98,4 @@ const reducer = combineReducers({
 
 const controller = createStore(reducer);
 
-module.exports = controller;
+module.exports = { controller: controller, restartIdleBots: restartIdleBots };

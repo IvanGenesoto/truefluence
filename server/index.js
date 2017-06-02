@@ -15,7 +15,7 @@ const Scraper = require('./scraper');
 const Metrics = require('./metrics');
 // const TaskManager = require('./task-manager');
 // const taskManager = new TaskManager();
-const controller = require('./bot-controller');
+const { controller } = require('./bot-controller');
 const store = require('./../client/store');
 const currentSession = { initialized: false, session: {} };
 
