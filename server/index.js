@@ -13,9 +13,9 @@ const async = require('async');
 const ParseScrape = require('./parse-scrape');
 const Scraper = require('./scraper');
 const Metrics = require('./metrics');
-const TaskManager = require('./task-manager');
-const taskManager = new TaskManager();
-const botController = require('./bot-controller');
+// const TaskManager = require('./task-manager');
+// const taskManager = new TaskManager();
+const { controller } = require('./bot-controller');
 const store = require('./../client/store');
 const currentSession = { initialized: false, session: {} };
 
@@ -70,21 +70,29 @@ app.post('/account', (req, res) => {
     })
 })
 
+app.get('/profiles-available', (req, res) => {
+  controller.dispatch({
+    type: 'PROFILES_AVAILABLE'
+  })
+})
+
 app.post('/test-task', (req, res) => {
+  // controller.dispatch({
+  //   type: 'PROFILES_AVAILABLE'
+  // })
   database.getTaskByUserId(req.body.id)
     .then(result => {
-      console.log(result[0]);
       if (result[0]) {
-        console.log('task exists!');
-        store.dispatch({
-          type: 'SHOW_PROGRESS'
+        res.send('task exists');
+        controller.dispatch({
+          type: 'TASKS_AVAILABLE'
         })
-        taskManager.startTask(result[0].id, currentSession.session);
+        // taskManager.startTask(result[0].id, currentSession.session);
       } else {
         database.createTask(req.body.id)
           .then(task => {
             res.json(task);
-            botController.dispatch({
+            controller.dispatch({
               type: 'TASKS_AVAILABLE'
             });
           })
@@ -247,10 +255,10 @@ app.post('/followers', (req, res) => {
 
 // INITIALIZATION PROCEDURES HERE
 
-ig.initialize()
-  .then((session) => {
-    currentSession.session = session;
-  });
+// ig.initialize()
+//   .then((session) => {
+//     currentSession.session = session;
+//   });
 
 const PORT = 5760; // find default port
 

@@ -105,13 +105,13 @@ Database.prototype.upsertRelationship = function (userId, followingId, following
         .then(result => {
           const count = Number(result[0].count);
           if (count > 0) {
-            // this.updateRelationship(userId, followingId, following)
-            //   .then(result => {
-            //     console.log('relationship updated for', userId);
-            //   })
-            //   .catch(err => {
-            //     console.log('could not update relationship for', userId);
-            //   });
+            this.updateRelationship(userId, followingId, following)
+              .then(result => {
+                console.log('relationship updated for', userId);
+              })
+              .catch(err => {
+                console.log('could not update relationship for', userId);
+              });
           } else {
             this.createRelationship(userId, followingId, following)
               .then(result => {
@@ -124,6 +124,20 @@ Database.prototype.upsertRelationship = function (userId, followingId, following
           resolve('complete');
         })
   })
+}
+
+Database.prototype.getNextQueue = function (botId) {
+  return knex('users')
+    .select('username', 'task_id', 'id')
+    .whereRaw('id % 4 = ?', [botId])
+    .whereNotNull('task_id')
+    .limit(1)
+}
+
+Database.prototype.completeScrape = function (username) {
+  return knex('users')
+    .where('username', username)
+    .update({task_id: null})
 }
 
 Database.prototype.getIdFromExternalId = function (externalId, tableName) {
@@ -147,6 +161,7 @@ Database.prototype.updateUser = function (user) {
   user.updated_at = timeNow;
   return knex('users')
     .where('external_id', user.external_id)
+    .returning('id')
     .update(user);
 }
 
@@ -237,14 +252,9 @@ Database.prototype.updateTask = function (task) {
 }
 
 Database.prototype.getTask = function (taskId) {
-  return new Promise((resolve, reject) => {
-    knex('tasks')
-      .select('*')
-      .where('id', taskId)
-      .then(result => {
-        resolve(result);
-      })
-  })
+  return knex('tasks')
+    .select('*')
+    .where('id', taskId)
 }
 
 Database.prototype.getTaskByUserId = function (userId) {
@@ -253,14 +263,23 @@ Database.prototype.getTaskByUserId = function (userId) {
       .select('*')
       .where('primary_user_id', userId)
       .then(result => {
-        console.log('get task by user id:', result);
         resolve(result);
       })
   })
 }
 
 Database.prototype.getNextTask = function () {
+  return knex('tasks')
+    .select('*')
+    .where('follower_list_complete', false)
+    .orderBy('created_at', 'asc')
+    .limit(1)
+}
 
+Database.prototype.updateTask = function (taskId, params) {
+  return knex('tasks')
+    .where('id', taskId)
+    .update(params)
 }
 
 Database.prototype.upsertUser = function (user) {
@@ -295,7 +314,6 @@ Database.prototype.upsertUser = function (user) {
 }
 
 Database.prototype.queueFollower = function (profile) {
-  profile.refreshed_at = null;
   return new Promise((resolve, reject) => {
     this.upsertUser(profile)
       .then(result => {
